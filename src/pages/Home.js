@@ -34,6 +34,62 @@ const TitleText = styled.div`
 `
 const Emoji = styled.div`
   font-size: 32px;
+  animation-duration: 3s;
+  animation-name: wave;
+  animation-iteration-count: 1;
+  transform-origin: 70% 70%;
+
+  @keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  5% {
+    transform: rotate(-5deg);
+  }
+
+  10% {
+    transform: rotate(10deg);
+  }
+
+  20% {
+    transform: rotate(-10deg);
+  }
+
+  30% {
+    transform: rotate(12deg);
+  }
+
+  40% {
+    transform: rotate(-10deg);
+  }
+
+  50% {
+    transform: rotate(12deg);
+  }
+
+  60% {
+    transform: rotate(-10deg);
+  }
+
+  70% {
+    transform: rotate(12deg);
+  }
+
+  80% {
+    transform: rotate(-10deg);
+  }
+
+  90% {
+    transform: rotate(9deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+
+
+}
 `
 const Text = styled.div`
   margin-top: 24px; 

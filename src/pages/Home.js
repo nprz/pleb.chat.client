@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -18,7 +19,7 @@ const ContentContainer = styled.div`
   max-width: 400px;
   margin: 24px 0px;
   height: 100%;
-  margin-bottom: 124px;
+  padding: 0rem 1.25rem;
 `
 
 const TitleContainer = styled.div`
@@ -31,6 +32,7 @@ const TitleText = styled.div`
   font-weight: bold;
   font-size: 20px;
   margin-left: 12px;
+  color: #333;
 `
 const Emoji = styled.div`
   font-size: 32px;
@@ -94,6 +96,7 @@ const Emoji = styled.div`
 const Text = styled.div`
   font-size: 20px;
   text-align: center;
+  color: #4f4f4f;
 `
 
 const Spacer = styled.div`
@@ -101,27 +104,70 @@ const Spacer = styled.div`
   height: 24px;
 `
 
-const InputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const StyledInput = styled.input`
   margin-left: 12px;
   height: 20px;
   border: none;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #4f4f4f;
   font-size: 20px;
-background-color: #f2efe4;
+  background-color: #f2efe4;
+  color: #4f4f4f;
+  width: 85%;  
 
   &:focus {
     outline: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #4f4f4f;
+;
   }
 `
 
+const StyledButton = styled.div`
+  margin: 16px 0px;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+  width: 100px;
+  min-width: 0px;
+  white-space: nowrap;
+  transition: color 0.25s, background-color 0.25s, padding 0.25s;
+
+  &:hover {
+    color: white;
+    background-color: #333;
+  }
+`
+const ButtonText = styled.div`
+  font-size: 20px;
+  line-height: 20px;
+`;
+
+
 export default function Home() {
+  const [inputValue, setInputValue] = useState('');
+  const history = useHistory();
+
+  function handleType(e) {
+    setInputValue(e.target.value);
+  } 
+
+  // TODO: validate URL with regex
+  // display modal indicating the input
+  // is not a url, don't talk like a robot
+  // maybe a gif showing where to get the url?
+  // maby use link instead of history?
+  function handleCreateRoom() {
+    const splitURL = inputValue.split('/');
+    if (splitURL.length !== 5) return;
+
+    console.log(splitURL);
+    history.push(`/room/${splitURL[4]}`);
+  }
+  
+  
   return (
     <Container>
       <ContentContainer>
@@ -146,11 +192,15 @@ export default function Home() {
       </Text>
 
       <Spacer />
+        <StyledInput onChange={handleType} value={inputValue} placeholder="Room URL" />
+      
       <Spacer />
       <Spacer />
-      <InputContainer>
-        <Text>Clubhouse room URL:</Text> <StyledInput />
-      </InputContainer>
+      <Spacer />
+      <StyledButton onClick={handleCreateRoom} >
+        <ButtonText>Create Room</ButtonText>
+      </StyledButton>
+
       </ContentContainer>
     </Container>
   )

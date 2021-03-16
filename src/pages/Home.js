@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import CREATE_CHATROOM from '../mutations/createChatRoom.gql';
 
 const Container = styled.div`
   display: flex;
@@ -149,6 +151,7 @@ const ButtonText = styled.div`
 export default function Home() {
   const [inputValue, setInputValue] = useState('');
   const history = useHistory();
+  const [createChatRoom, { data, loading }] = useMutation(CREATE_CHATROOM)
 
   function handleType(e) {
     setInputValue(e.target.value);
@@ -159,11 +162,17 @@ export default function Home() {
   // is not a url, don't talk like a robot
   // maybe a gif showing where to get the url?
   // maby use link instead of history?
-  function handleCreateRoom() {
+  async function handleCreateRoom() {
     const splitURL = inputValue.split('/');
     if (splitURL.length !== 5) return;
+    await createChatRoom({
+      variables: {
+        title: 'temp title',
+        url: inputValue,
+        id: splitURL[4]
+      }
+    })
 
-    console.log(splitURL);
     history.push(`/room/${splitURL[4]}`);
   }
   

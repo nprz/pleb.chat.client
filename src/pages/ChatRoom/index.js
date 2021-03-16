@@ -2,6 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 
+import { useQuery } from '@apollo/client';
+import GET_CHATROOM from '../../queries/getChatRoom.gql';
+
 const Container = styled.div`
   height: 100vh;
   width: 100vw;
@@ -22,7 +25,7 @@ const Header = styled.div`
 `
 
 const ChatContainer = styled.div`
-  flex: 1;
+  min-height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,10 +36,19 @@ const ChatContainer = styled.div`
 const InputContainer = styled.div`
   position: sticky;
   bottom: 0;
+  height: 40px;
+  border: 1px solid red;
 `
 
 export default function ChatRoom() {
   const { chatRoomId } = useParams();
+  const { loading, data } = useQuery(GET_CHATROOM, { 
+    variables: {
+      id: chatRoomId  
+    }
+  }) 
+
+  console.log(data);
   
   return (
     <Container>

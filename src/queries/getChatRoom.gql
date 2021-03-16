@@ -1,0 +1,16 @@
+query getChatRoom($chatRoomId: Int!) {
+  chatRoom(chatRoomId: $chatRoomId) {
+    id
+    title
+    url
+    messages {
+      id
+      content
+      createdAt
+      user {
+        id
+        name
+      }
+    }
+  }
+}

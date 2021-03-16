@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+
+import { loader } from 'graphql.macro';
 import { useMutation } from '@apollo/client';
-import CREATE_CHATROOM from '../mutations/createChatRoom.gql';
+
+const CREATE_CHATROOM = loader('../mutations/createChatRoom.gql');
+
 
 const Container = styled.div`
   display: flex;

@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 
 import { useQuery } from '@apollo/client';
-import GET_CHATROOM from '../../queries/getChatRoom.gql';
+import { loader } from 'graphql.macro';
+
+const GET_CHATROOM = loader('../../queries/getChatRoom.gql');
 
 const Container = styled.div`
   height: 100vh;
@@ -44,12 +46,11 @@ export default function ChatRoom() {
   const { chatRoomId } = useParams();
   const { loading, data } = useQuery(GET_CHATROOM, { 
     variables: {
-      id: chatRoomId  
+      chatRoomId  
     }
   }) 
-
-  console.log(data);
   
+  console.log(data)
   return (
     <Container>
       <Header>

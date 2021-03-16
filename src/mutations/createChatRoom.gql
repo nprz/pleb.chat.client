@@ -1,4 +1,5 @@
-mutation createChatRoom($url: String!, $title: String!) {
-  createChatRoom(url: $url, title: $title) {
+mutation createChatRoom($url: String!, $title: String!, $id: String!) {
+  createChatRoom(url: $url, title: $title, id: $id) {
     id
+  }
 }

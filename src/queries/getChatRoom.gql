@@ -1,4 +1,4 @@
-query getChatRoom($chatRoomId: Int!) {
+query getChatRoom($chatRoomId: String!) {
   chatRoom(chatRoomId: $chatRoomId) {
     id
     title

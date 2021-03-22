@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 
 import { loader } from "graphql.macro";
@@ -9,11 +10,18 @@ import { useMutation } from "@apollo/client";
 
 const CREATE_CHATROOM = loader("../mutations/createChatRoom.gql");
 
+// 2 styling solutions, this is bad lol
+const useStyles = makeStyles((theme) => ({
+  textField: {
+    width: "100%",
+  },
+}));
+
 const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: calc(100vh - 62px);
   width: 100vw;
   background-color: #f2efe4;
 `;
@@ -98,6 +106,7 @@ const Emoji = styled.div`
     }
   }
 `;
+
 const Text = styled.div`
   font-size: 20px;
   text-align: center;
@@ -109,9 +118,22 @@ const Spacer = styled.div`
   height: 24px;
 `;
 
+const Header = styled.div`
+  height: 60px;
+  width: calc(100vw - 2.5rem);
+  position: sticky;
+  top: 0;
+  padding: 0rem 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+`;
+
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const history = useHistory();
+  const classes = useStyles();
   const [createChatRoom, { data, loading }] = useMutation(CREATE_CHATROOM);
 
   function handleType(e) {
@@ -138,28 +160,45 @@ export default function Home() {
   }
 
   return (
-    <Container>
-      <ContentContainer>
-        <TitleContainer>
-          <Emoji>👋</Emoji>
-          <TitleText>Pleb Chat</TitleText>
-        </TitleContainer>
-        <Spacer />
-        <Text>
-          Hey, you don't have enough followers to get on stage and you don't
-          know what you'd say in front of all those people anyway.
-        </Text>
+    <>
+      <Header>
+        <Button size="small" variant="contained">
+          Login
+        </Button>
+      </Header>
+      <Container>
+        <ContentContainer>
+          <TitleContainer>
+            <Emoji>👋</Emoji>
+            <TitleText>Pleb Chat</TitleText>
+          </TitleContainer>
+          <Spacer />
+          <Text>
+            Hey, you don't have enough followers to get on stage and you don't
+            know what you'd say in front of all those people anyway.
+          </Text>
 
-        <Spacer />
-        <Text>Pleb Chat is here for you.</Text>
+          <Spacer />
+          <Text>Pleb Chat is here for you.</Text>
 
-        <Spacer />
-        <Text>Join the conversation. Join Pleb Chat.</Text>
-        <Spacer />
+          <Spacer />
+          <Text>Join the conversation. Join Pleb Chat.</Text>
+          <Spacer />
 
-        <TextField label="Room URL" value={inputValue} onChange={handleType} />
-        <Button onClick={handleCreateRoom}>Create Room</Button>
-      </ContentContainer>
-    </Container>
+          <TextField
+            label="Room URL"
+            value={inputValue}
+            onChange={handleType}
+            className={classes.textField}
+          />
+          <Spacer />
+          <Spacer />
+
+          <Button onClick={handleCreateRoom} variant="contained">
+            Create Room
+          </Button>
+        </ContentContainer>
+      </Container>
+    </>
   );
 }

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import history from "../utils/history";
+import { useAuth0 } from "../utils/auth";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
 
 import { loader } from "graphql.macro";
 import { useMutation } from "@apollo/client";
@@ -132,8 +133,13 @@ const Header = styled.div`
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
-  const history = useHistory();
   const classes = useStyles();
+  const {
+    isAuthenticated,
+    loading: authLoading,
+    loginWithRedirect,
+    logout,
+  } = useAuth0();
   const [createChatRoom, { data, loading }] = useMutation(CREATE_CHATROOM);
 
   function handleType(e) {
@@ -162,8 +168,12 @@ export default function Home() {
   return (
     <>
       <Header>
-        <Button size="small" variant="contained">
-          Login
+        <Button
+          size="small"
+          variant="contained"
+          onClick={isAuthenticated ? logout : () => loginWithRedirect()}
+        >
+          {isAuthenticated ? "Logout" : "Login"}
         </Button>
       </Header>
       <Container>

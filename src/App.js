@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import history from "./utils/history";
 
 // Components
-import Home from './pages/Home';
-import ChatRoom from './pages/ChatRoom';
-
+import Home from "./pages/Home";
+import ChatRoom from "./pages/ChatRoom";
 
 function App() {
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
         <Route exact path="/">
           <Home />

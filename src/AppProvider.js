@@ -1,15 +1,9 @@
 import React from "react";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { ApolloProvider } from "@apollo/client";
 import { Auth0Provider } from "./utils/auth";
+import AuthWrapper from "./AuthWrapper";
 import history from "./utils/history";
 
 import App from "./App";
-
-const client = new ApolloClient({
-  uri: "http://localhost:4000/",
-  cache: new InMemoryCache(),
-});
 
 const onRedirectCallback = (appState) => {
   history.push(
@@ -28,9 +22,9 @@ export default function AppProvider() {
       redirect_uri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
     >
-      <ApolloProvider client={client}>
+      <AuthWrapper>
         <App />
-      </ApolloProvider>
+      </AuthWrapper>
     </Auth0Provider>
   );
 }

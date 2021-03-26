@@ -171,7 +171,7 @@ export default function Home() {
         <Button
           size="small"
           variant="contained"
-          onClick={isAuthenticated ? logout : () => loginWithRedirect()}
+          onClick={isAuthenticated ? logout : loginWithRedirect}
         >
           {isAuthenticated ? "Logout" : "Login"}
         </Button>

@@ -34,7 +34,7 @@ export default function AuthWrapper({ children }) {
   });
 
   const httpLink = new HttpLink({
-    uri: "http://localhost:4000/",
+    uri: "http://localhost:4001/",
   });
 
   const client = new ApolloClient({

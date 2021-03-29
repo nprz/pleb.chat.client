@@ -1,0 +1,36 @@
+type Query {
+  user(userId: Int!): User
+  chatRoom(chatRoomId: String!): ChatRoom
+}
+
+type Mutation {
+  createUser(email: String!, name: String!): User
+  createChatRoom(url: String!, title: String!, id: String!): ChatRoom
+  post(userId: ID!, chatRoomId: ID!, content: String!): Message
+}
+
+type Subscription {
+  newMessage: Message
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  messages: [Message!]!
+}
+
+type Message {
+  id: ID!
+  content: String!
+  createdAt: String!
+  user: User!
+  chatRoom: ChatRoom!
+}
+
+type ChatRoom {
+  id: String!
+  title: String!
+  url: String!
+  messages: [Message!]!
+}

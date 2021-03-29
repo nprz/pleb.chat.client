@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-plebchat-dev-215020-authRole",
+      "UnauthRoleArn": "arn:aws:iam::640431388849:role/amplify-plebchat-dev-215020-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::640431388849:role/amplify-plebchat-dev-215020-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-plebchat-dev-215020-deployment",
+      "UnauthRoleName": "amplify-plebchat-dev-215020-unauthRole",
+      "StackName": "amplify-plebchat-dev-215020",
+      "StackId": "arn:aws:cloudformation:us-east-1:640431388849:stack/amplify-plebchat-dev-215020/20a53fb0-9031-11eb-90d6-0ad6df532df1",
+      "AmplifyAppId": "ds07fnimnzd09"
+    }
+  }
+}

@@ -34,7 +34,7 @@ export default function AuthWrapper({ children }) {
   });
 
   const httpLink = new HttpLink({
-    uri: "http://localhost:4001/",
+    uri: "https://pleb-chat.herokuapp.com/",
   });
 
   const client = new ApolloClient({

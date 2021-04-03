@@ -10,7 +10,7 @@ import { loader } from "graphql.macro";
 import { useMutation, useLazyQuery } from "@apollo/client";
 
 const CREATE_CHATROOM = loader("../mutations/createChatRoom.gql");
-const GET_CHATROOM = loader("../../queries/getChatRoom.gql");
+const GET_CHATROOM = loader("../queries/getChatRoom.gql");
 
 // 2 styling solutions, this is bad lol
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +51,7 @@ const TitleText = styled.div`
   margin-left: 12px;
   color: #333;
 `;
+
 const Emoji = styled.div`
   font-size: 32px;
   animation-duration: 3s;

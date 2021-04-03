@@ -70,17 +70,20 @@ export default function ChatRoom() {
 
   subscribeToMore({
     document: NEW_MESSAGE,
+    variables: { chatRoomId },
     updateQuery: (prev, { subscriptionData }) => {
       if (!subscriptionData.data) return prev;
       const newMessage = subscriptionData.data.newMessage;
-      const exists = prev.chatRoom.message.find((m) => m.id === newMessage.id);
+      const exists = prev.chatRoom.messages.find((m) => m.id === newMessage.id);
 
       if (exists) return prev;
 
       return {
-        ...prev.chatRoom,
-        messages: [...prev.messages, newMessage],
-        __typename: prev.chatRoom.__typename,
+        chatRoom: {
+          ...prev.chatRoom,
+          messages: [...prev.chatRoom.messages, newMessage],
+          __typename: prev.chatRoom.__typename,
+        },
       };
     },
   });
@@ -90,7 +93,7 @@ export default function ChatRoom() {
       <Header>{chatRoomId}</Header>
       <ChatContainer>
         {messages.map((message) => (
-          <Chat>
+          <Chat key={message.id}>
             <div>{message.user.name}</div>
             <div>{message.content}</div>
           </Chat>

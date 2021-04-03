@@ -37,14 +37,14 @@ export default function AuthWrapper({ children }) {
   });
 
   const wsLink = new WebSocketLink({
-    uri: `ws://pleb-chat.herokuapp.com/`,
+    uri: `ws://localhost:4001/subscriptions`,
     options: {
       reconnect: true,
     },
   });
 
   const httpLink = new HttpLink({
-    uri: "https://pleb-chat.herokuapp.com/",
+    uri: "http://localhost:4001/",
   });
 
   const link = split(

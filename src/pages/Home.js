@@ -7,9 +7,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useAuth0 } from "../utils/auth";
 import { useHistory } from "react-router-dom";
 import { loader } from "graphql.macro";
-import { useMutation } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 
 const CREATE_CHATROOM = loader("../mutations/createChatRoom.gql");
+const GET_CHATROOM = loader("../../queries/getChatRoom.gql");
 
 // 2 styling solutions, this is bad lol
 const useStyles = makeStyles((theme) => ({
@@ -142,8 +143,11 @@ export default function Home() {
     logout,
   } = useAuth0();
   const [createChatRoom, { data, loading }] = useMutation(CREATE_CHATROOM);
+  const [
+    getChatRoom,
+    { loading: getChatRoomLoading, data: chatRoomData },
+  ] = useLazyQuery(GET_CHATROOM);
 
-  console.log(isAuthenticated);
   function handleType(e) {
     setInputValue(e.target.value);
   }
@@ -156,6 +160,22 @@ export default function Home() {
   async function handleCreateRoom() {
     const splitURL = inputValue.split("/");
     if (splitURL.length !== 5) return;
+
+    await getChatRoom({
+      variables: {
+        chatRoomId: splitURL[4],
+      },
+    });
+
+    if (chatRoomData) {
+      history.push(`/room/${splitURL[4]}`);
+    }
+
+    // chatRoom does not exist
+    if (!isAuthenticated) {
+      // modal time
+    }
+
     await createChatRoom({
       variables: {
         title: "temp title",

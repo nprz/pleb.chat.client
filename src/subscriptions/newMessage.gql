@@ -1,0 +1,11 @@
+subscription newMessageListen($chatRoomId: ID!) {
+  newMessage(chatRoomId: $chatRoomId) {
+    id
+    content
+    createdAt
+    user {
+      id
+      name
+    }
+  }
+}

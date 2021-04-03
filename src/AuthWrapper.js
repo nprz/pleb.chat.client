@@ -4,7 +4,10 @@ import {
   InMemoryCache,
   ApolloProvider,
   HttpLink,
+  split,
 } from "@apollo/client";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "@apollo/link-context";
 import { useAuth0 } from "./utils/auth";
 
@@ -33,13 +36,29 @@ export default function AuthWrapper({ children }) {
     };
   });
 
+  const wsLink = new WebSocketLink({
+    uri: `ws://pleb-chat.herokuapp.com/`,
+    options: {
+      reconnect: true,
+    },
+  });
+
   const httpLink = new HttpLink({
     uri: "https://pleb-chat.herokuapp.com/",
   });
 
+  const link = split(
+    ({ query }) => {
+      const { kind, operation } = getMainDefinition(query);
+      return kind === "OperationDefinition" && operation === "subscription";
+    },
+    wsLink,
+    authLink.concat(httpLink)
+  );
+
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: authLink.concat(httpLink),
+    link,
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

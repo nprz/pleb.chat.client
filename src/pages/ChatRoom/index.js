@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { loader } from "graphql.macro";
 
 const GET_CHATROOM = loader("../../queries/getChatRoom.gql");
+const NEW_MESSAGE = loader("../../subscriptions/newMessage.gql");
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -49,23 +50,52 @@ const InputContainer = styled.div`
 `;
 
 const Chat = styled.div`
-  height: 40px;
+  min-height: 40px;
   width: 100%;
+  border: 1px solid black;
 `;
 
 export default function ChatRoom() {
   const classes = useStyles();
   const { chatRoomId } = useParams();
-  const { loading, data } = useQuery(GET_CHATROOM, {
+  const {
+    loading,
+    data: { chatRoom: { messages = [] } = {} } = {},
+    subscribeToMore,
+  } = useQuery(GET_CHATROOM, {
     variables: {
       chatRoomId,
+    },
+  });
+
+  subscribeToMore({
+    document: NEW_MESSAGE,
+    updateQuery: (prev, { subscriptionData }) => {
+      if (!subscriptionData.data) return prev;
+      const newMessage = subscriptionData.data.newMessage;
+      const exists = prev.chatRoom.message.find((m) => m.id === newMessage.id);
+
+      if (exists) return prev;
+
+      return {
+        ...prev.chatRoom,
+        messages: [...prev.messages, newMessage],
+        __typename: prev.chatRoom.__typename,
+      };
     },
   });
 
   return (
     <Container>
       <Header>{chatRoomId}</Header>
-      <ChatContainer></ChatContainer>
+      <ChatContainer>
+        {messages.map((message) => (
+          <Chat>
+            <div>{message.user.name}</div>
+            <div>{message.content}</div>
+          </Chat>
+        ))}
+      </ChatContainer>
       <InputContainer>
         <TextField
           id="outlined-multiline-static"

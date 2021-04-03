@@ -1,0 +1,11 @@
+mutation post($userId: ID!, $chatRoomId: ID!, $content: String!) {
+  post(userId: $userId, chatRoomId: $chatRoomId, content: $content) {
+    id
+    content
+    createdAt
+    user {
+      id
+      name
+    }
+  }
+}

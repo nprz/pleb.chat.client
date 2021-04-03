@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { useQuery } from "@apollo/client";
+import { useAuth0 } from "../../utils/auth";
+import { useQuery, useMutation } from "@apollo/client";
 import { loader } from "graphql.macro";
 
 const GET_CHATROOM = loader("../../queries/getChatRoom.gql");
 const NEW_MESSAGE = loader("../../subscriptions/newMessage.gql");
+const POST = loader("../../mutations/post.gql");
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -32,13 +34,13 @@ const Header = styled.div`
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
-  background-color: #f2efe4;
+  background-color: #bfbdb0;
 `;
 
 const ChatContainer = styled.div`
   height: calc(100vh - 117px);
   overflow: auto;
-  background-color: #bfbdb0;
+  background-color: #f2efe4;
 `;
 
 const InputContainer = styled.div`
@@ -57,16 +59,35 @@ const Chat = styled.div`
 
 export default function ChatRoom() {
   const classes = useStyles();
+  const [textValue, setTextValue] = useState();
   const { chatRoomId } = useParams();
+  const { user } = useAuth0();
+  const userId = useMemo(() => {
+    const { sub = "|" } = user || {};
+    return sub.split("|")[1];
+  }, [user]);
   const {
     loading,
     data: { chatRoom: { messages = [] } = {} } = {},
-    subscribeToMore,
+    subscribeToMore = () => {},
   } = useQuery(GET_CHATROOM, {
     variables: {
       chatRoomId,
     },
   });
+  const [post, { loading: postLoading }] = useMutation(POST);
+
+  function handleClick() {
+    post({
+      variables: {
+        chatRoomId,
+        userId,
+        content: textValue,
+      },
+    });
+
+    setTextValue("");
+  }
 
   subscribeToMore({
     document: NEW_MESSAGE,
@@ -105,8 +126,14 @@ export default function ChatRoom() {
           multiline
           variant="outlined"
           style={{ width: "100%" }}
+          value={textValue}
+          onChange={(e) => setTextValue(e.target.value)}
         />
-        <Button className={classes.button} variant="contained">
+        <Button
+          onClick={handleClick}
+          className={classes.button}
+          variant="contained"
+        >
           Send
         </Button>
       </InputContainer>

@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from "react";
-import styled from "styled-components";
 import { useParams } from "react-router-dom";
+import moment from "moment";
+
+import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import SendIcon from "@material-ui/icons/Send";
 import IconButton from "@material-ui/core/IconButton";
@@ -62,6 +64,11 @@ const Chat = styled.div`
   margin: 12px 0px;
 `;
 
+const DateText = styled.div`
+  font-size: 0.75rem;
+  opacity: 90%;
+`;
+
 export default function ChatRoom() {
   const classes = useStyles();
   const [textValue, setTextValue] = useState();
@@ -114,13 +121,19 @@ export default function ChatRoom() {
     },
   });
 
+  console.log();
   return (
     <Container>
       <Header>{chatRoomId}</Header>
       <ChatContainer>
         {messages.map((message) => (
           <Chat key={message.id}>
-            <b>{`${message.user.name}:`}</b> {`${message.content}`}
+            <div>
+              <b>{`${message.user.name}:`}</b> {`${message.content}`}
+            </div>
+            <DateText>
+              {moment.unix(message.createdAt).format("h:m a")}
+            </DateText>
           </Chat>
         ))}
       </ChatContainer>

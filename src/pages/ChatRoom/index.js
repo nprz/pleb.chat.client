@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 
@@ -72,6 +72,7 @@ const DateText = styled.div`
 export default function ChatRoom() {
   const classes = useStyles();
   const [textValue, setTextValue] = useState();
+  const messageEndRef = useRef(null);
   const { chatRoomId } = useParams();
   const { user } = useAuth0();
   const userId = useMemo(() => {
@@ -88,6 +89,10 @@ export default function ChatRoom() {
     },
   });
   const [post, { loading: postLoading }] = useMutation(POST);
+
+  useEffect(() => {
+    messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   function handleClick() {
     post({
@@ -121,7 +126,6 @@ export default function ChatRoom() {
     },
   });
 
-  console.log();
   return (
     <Container>
       <Header>{chatRoomId}</Header>
@@ -132,10 +136,15 @@ export default function ChatRoom() {
               <b>{`${message.user.name}:`}</b> {`${message.content}`}
             </div>
             <DateText>
-              {moment.unix(message.createdAt).format("h:m a")}
+              {message.createdAt.includes("T")
+                ? moment(message.createdAt).format("h:mm a")
+                : moment(new Date(parseInt(message.createdAt))).format(
+                    "h:mm a"
+                  )}
             </DateText>
           </Chat>
         ))}
+        <div ref={messageEndRef} />
       </ChatContainer>
       <InputContainer>
         <TextField

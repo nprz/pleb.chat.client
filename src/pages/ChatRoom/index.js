@@ -2,7 +2,8 @@ import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import SendIcon from "@material-ui/icons/Send";
+import IconButton from "@material-ui/core/IconButton";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../../utils/auth";
@@ -14,10 +15,12 @@ const NEW_MESSAGE = loader("../../subscriptions/newMessage.gql");
 const POST = loader("../../mutations/post.gql");
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    position: "absolute",
-    right: 0,
-    top: 0,
+  iconButton: {
+    margin: "0px 16px 0px 8px",
+  },
+  textInputRoot: {
+    margin: " 12px",
+    backgroundColor: "#fff",
   },
 }));
 
@@ -38,23 +41,25 @@ const Header = styled.div`
 `;
 
 const ChatContainer = styled.div`
-  height: calc(100vh - 117px);
+  height: calc(100vh - 141px);
   overflow: auto;
   background-color: #f2efe4;
+  padding: 0px 12px;
 `;
 
 const InputContainer = styled.div`
   position: relative;
   bottom: 0;
   width: 100%;
-  height: 56px;
-  background-color: #f2efe4;
+  min-height: 80px;
+  background-color: #bfbdb0;
+  display: flex;
+  align-items: center;
 `;
 
 const Chat = styled.div`
-  min-height: 40px;
   width: 100%;
-  border: 1px solid black;
+  margin: 12px 0px;
 `;
 
 export default function ChatRoom() {
@@ -115,8 +120,7 @@ export default function ChatRoom() {
       <ChatContainer>
         {messages.map((message) => (
           <Chat key={message.id}>
-            <div>{message.user.name}</div>
-            <div>{message.content}</div>
+            <b>{`${message.user.name}:`}</b> {`${message.content}`}
           </Chat>
         ))}
       </ChatContainer>
@@ -126,16 +130,22 @@ export default function ChatRoom() {
           multiline
           variant="outlined"
           style={{ width: "100%" }}
+          size="small"
           value={textValue}
           onChange={(e) => setTextValue(e.target.value)}
+          classes={{
+            root: classes.textInputRoot,
+          }}
         />
-        <Button
+        <IconButton
+          aria-label="delete"
+          size="small"
+          disabled={!textValue?.length}
           onClick={handleClick}
-          className={classes.button}
-          variant="contained"
+          className={classes.iconButton}
         >
-          Send
-        </Button>
+          <SendIcon fontSize="small" />
+        </IconButton>
       </InputContainer>
     </Container>
   );

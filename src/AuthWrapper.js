@@ -36,15 +36,30 @@ export default function AuthWrapper({ children }) {
     };
   });
 
+  const host = {
+    mobile: {
+      ws: "ws://169.254.113.189/subscriptions",
+      http: "http://169.254.113.189",
+    },
+    local: {
+      ws: `ws://localhost:4001/subscriptions`,
+      http: `http://localhost:4001/`,
+    },
+    heroku: {
+      ws: `ws://pleb-chat.herokuapp.com/subscriptions`,
+      http: `http://pleb-chat.herokuapp.com/`,
+    },
+  };
+
   const wsLink = new WebSocketLink({
-    uri: `ws://localhost:4001/subscriptions`,
+    uri: host.heroku.ws,
     options: {
       reconnect: true,
     },
   });
 
   const httpLink = new HttpLink({
-    uri: "http://localhost:4001/",
+    uri: host.heroku.http,
   });
 
   const link = split(

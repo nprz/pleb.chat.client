@@ -155,15 +155,16 @@ export default function Home() {
 
   /*
     TODO:
-    - Redis server
+    - Redis server ✅
     - Check settings for all these services
     - Turn off AWS
     - Scroll down when posting ✅
-    - Regex url
+    - Regex url 
     - Making sure flow on log in actually works
     - Make sure flow when logged out actually works
     - Fetch and scrape data from clubhouse
     - Test on phone
+
     - Switch out the favicon
     - center and max width for desktop
     - CSS when input extends beyond 3 lines
@@ -179,6 +180,7 @@ export default function Home() {
     const splitURL = inputValue.split("/");
     if (splitURL.length !== 5) return;
 
+    console.log(splitURL[4]);
     await getChatRoom({
       variables: {
         chatRoomId: splitURL[4],

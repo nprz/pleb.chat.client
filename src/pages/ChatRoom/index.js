@@ -27,14 +27,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Container = styled.div`
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
   background-color: #f2efe4;
+  border: 1px solid red;
 `;
 
 const Header = styled.div`
   height: 60px;
-  width: 100%;
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,15 +52,16 @@ const Header = styled.div`
 `;
 
 const ChatContainer = styled.div`
-  height: calc(100vh - 141px);
   overflow: auto;
   background-color: #f2efe4;
   padding: 0px 12px;
 `;
 
 const InputContainer = styled.div`
-  position: relative;
+  position: absolute;
   bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   min-height: 80px;
   background-color: #bfbdb0;
@@ -74,7 +84,7 @@ export default function ChatRoom() {
   const [textValue, setTextValue] = useState();
   const messageEndRef = useRef(null);
   const { chatRoomId } = useParams();
-  const { user } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
   const userId = useMemo(() => {
     const { sub = "|" } = user || {};
     return sub.split("|")[1];

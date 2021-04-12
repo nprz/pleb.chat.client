@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Modal from "@material-ui/core/Modal";
+import ClearIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../utils/auth";
@@ -20,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 62px);
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
   background-color: #f2efe4;
 `;
 
@@ -123,18 +128,27 @@ const Spacer = styled.div`
 
 const Header = styled.div`
   height: 60px;
-  width: calc(100vw - 2.5rem);
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   padding: 0rem 1.25rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
+  background-color: #f2efe4;
+`;
+
+const ModalBody = styled.div`
+  height: 100px;
+  width:  
+  background-color: red;
 `;
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
+  const [viewModal, setViewModal] = useState(false);
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -151,6 +165,10 @@ export default function Home() {
 
   function handleType(e) {
     setInputValue(e.target.value);
+  }
+
+  function handleClear() {
+    setInputValue("");
   }
 
   /*
@@ -180,20 +198,22 @@ export default function Home() {
     const splitURL = inputValue.split("/");
     if (splitURL.length !== 5) return;
 
-    console.log(splitURL[4]);
+    console.log(splitURL);
     await getChatRoom({
       variables: {
         chatRoomId: splitURL[4],
       },
     });
 
+    console.log(chatRoomData);
     if (chatRoomData) {
       history.push(`/room/${splitURL[4]}`);
     }
 
     // chatRoom does not exist
     if (!isAuthenticated) {
-      // modal time
+      setViewModal(true);
+      return;
     }
 
     await createChatRoom({
@@ -208,7 +228,7 @@ export default function Home() {
   }
 
   return (
-    <>
+    <Container>
       <Header>
         <Button
           size="small"
@@ -218,39 +238,49 @@ export default function Home() {
           {isAuthenticated ? "Logout" : "Login"}
         </Button>
       </Header>
-      <Container>
-        <ContentContainer>
-          <TitleContainer>
-            <Emoji>👋</Emoji>
-            <TitleText>Pleb Chat</TitleText>
-          </TitleContainer>
-          <Spacer />
-          <Text>
-            Hey, you don't have enough followers to get on stage and you don't
-            know what you'd say in front of all those people anyway.
-          </Text>
+      <ContentContainer>
+        <TitleContainer>
+          <Emoji>👋</Emoji>
+          <TitleText>Pleb Chat</TitleText>
+        </TitleContainer>
+        <Spacer />
+        <Text>
+          Hey, you don't have enough followers to get on stage and you don't
+          know what you'd say in front of all those people anyway.
+        </Text>
 
-          <Spacer />
-          <Text>Pleb Chat is here for you.</Text>
+        <Spacer />
+        <Text>Pleb Chat is here for you.</Text>
 
-          <Spacer />
-          <Text>Join the conversation. Join Pleb Chat.</Text>
-          <Spacer />
+        <Spacer />
+        <Text>Join the conversation. Join Pleb Chat.</Text>
+        <Spacer />
 
-          <TextField
-            label="Room URL"
-            value={inputValue}
-            onChange={handleType}
-            className={classes.textField}
-          />
-          <Spacer />
-          <Spacer />
+        <TextField
+          label="Room URL"
+          value={inputValue}
+          onChange={handleType}
+          className={classes.textField}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleClear}>
+                  {inputValue.length ? <ClearIcon /> : undefined}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Spacer />
+        <Spacer />
 
-          <Button onClick={handleCreateRoom} variant="contained">
-            Create Room
-          </Button>
-        </ContentContainer>
-      </Container>
-    </>
+        <Button onClick={handleCreateRoom} variant="contained">
+          Create Room
+        </Button>
+      </ContentContainer>
+      <Modal open={viewModal} onClose={() => setViewModal(false)}>
+        <ModalBody>test</ModalBody>
+      </Modal>
+    </Container>
   );
 }

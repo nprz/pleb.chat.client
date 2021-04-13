@@ -142,8 +142,7 @@ const Header = styled.div`
 
 const ModalBody = styled.div`
   height: 100px;
-  width:  
-  background-color: red;
+  background-color: white;
 `;
 
 export default function Home() {

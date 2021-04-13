@@ -142,7 +142,7 @@ const Header = styled.div`
 
 const ModalBody = styled.div`
   height: 100px;
-  background-color: white;
+  background-color: #f2efe4;
 `;
 
 export default function Home() {
@@ -223,7 +223,7 @@ export default function Home() {
       },
     });
 
-    history.push(`/room/${splitURL[4]}`);
+    // history.push(`/room/${splitURL[4]}`);
   }
 
   return (
@@ -273,7 +273,11 @@ export default function Home() {
         <Spacer />
         <Spacer />
 
-        <Button onClick={handleCreateRoom} variant="contained">
+        <Button
+          onClick={handleCreateRoom}
+          variant="contained"
+          disabled={!inputValue.length}
+        >
           Create Room
         </Button>
       </ContentContainer>

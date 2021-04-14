@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Modal from "@material-ui/core/Modal";
 import ClearIcon from "@material-ui/icons/Close";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../utils/auth";
@@ -20,6 +21,9 @@ const GET_CHATROOM = loader("../queries/getChatRoom.gql");
 const useStyles = makeStyles((theme) => ({
   textField: {
     width: "100%",
+  },
+  modalRoot: {
+    border: "1px solid red",
   },
 }));
 
@@ -141,8 +145,15 @@ const Header = styled.div`
 `;
 
 const ModalBody = styled.div`
-  height: 100px;
   background-color: #f2efe4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  text-align: center;
+  transform: translate(0%, 120%);
+  outline-style: none;
 `;
 
 export default function Home() {
@@ -159,8 +170,12 @@ export default function Home() {
   const [createChatRoom, { data, loading }] = useMutation(CREATE_CHATROOM);
   const [
     getChatRoom,
-    { loading: getChatRoomLoading, data: chatRoomData },
+    { loading: getChatRoomLoading, data: { chatRoom } = {} },
   ] = useLazyQuery(GET_CHATROOM);
+
+  useEffect(() => {
+    document.title = "Pleb Chat";
+  }, []);
 
   function handleType(e) {
     setInputValue(e.target.value);
@@ -197,15 +212,13 @@ export default function Home() {
     const splitURL = inputValue.split("/");
     if (splitURL.length !== 5) return;
 
-    console.log(splitURL);
     await getChatRoom({
       variables: {
         chatRoomId: splitURL[4],
       },
     });
 
-    console.log(chatRoomData);
-    if (chatRoomData) {
+    if (chatRoom) {
       history.push(`/room/${splitURL[4]}`);
     }
 
@@ -223,7 +236,7 @@ export default function Home() {
       },
     });
 
-    // history.push(`/room/${splitURL[4]}`);
+    history.push(`/room/${splitURL[4]}`);
   }
 
   return (
@@ -281,8 +294,19 @@ export default function Home() {
           Create Room
         </Button>
       </ContentContainer>
-      <Modal open={viewModal} onClose={() => setViewModal(false)}>
-        <ModalBody>test</ModalBody>
+      <Modal
+        open={viewModal}
+        onClose={() => setViewModal(false)}
+        classes={{ root: classes.modalRoot }}
+      >
+        <ModalBody>
+          <div>That room has not been created yet.</div>
+          <div>Log in to create a new room.</div>
+          <Spacer />
+          <Button variant="contained" onClick={loginWithRedirect}>
+            {authLoading ? <CircularProgress /> : "Login"}
+          </Button>
+        </ModalBody>
       </Modal>
     </Container>
   );

@@ -6,6 +6,8 @@ import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import SendIcon from "@material-ui/icons/Send";
 import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../../utils/auth";
@@ -23,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   textInputRoot: {
     margin: " 12px",
     backgroundColor: "#fff",
+    borderRadius: "4px",
   },
 }));
 
@@ -35,15 +38,12 @@ const Container = styled.div`
   bottom: 0;
   top: 0;
   background-color: #f2efe4;
-  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Header = styled.div`
   height: 60px;
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,21 +52,35 @@ const Header = styled.div`
 `;
 
 const ChatContainer = styled.div`
-  overflow: auto;
+  overflow: scroll;
   background-color: #f2efe4;
   padding: 0px 12px;
+  max-height: 100%;
+  flex-grow: 1;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
 `;
 
 const InputContainer = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   width: 100%;
   min-height: 80px;
   background-color: #bfbdb0;
   display: flex;
   align-items: center;
+`;
+
+const LoginContainer = styled.div`
+  width: 100%;
+  min-height: 80px;
+  background-color: #bfbdb0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Chat = styled.div`
@@ -76,7 +90,7 @@ const Chat = styled.div`
 
 const DateText = styled.div`
   font-size: 0.75rem;
-  opacity: 90%;
+  opacity: 40%;
 `;
 
 export default function ChatRoom() {
@@ -84,7 +98,7 @@ export default function ChatRoom() {
   const [textValue, setTextValue] = useState();
   const messageEndRef = useRef(null);
   const { chatRoomId } = useParams();
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
   const userId = useMemo(() => {
     const { sub = "|" } = user || {};
     return sub.split("|")[1];
@@ -136,49 +150,64 @@ export default function ChatRoom() {
     },
   });
 
+  console.log(isAuthenticated);
   return (
     <Container>
       <Header>{chatRoomId}</Header>
-      <ChatContainer>
-        {messages.map((message) => (
-          <Chat key={message.id}>
-            <div>
-              <b>{`${message.user.name}:`}</b> {`${message.content}`}
-            </div>
-            <DateText>
-              {message.createdAt.includes("T")
-                ? moment(message.createdAt).format("h:mm a")
-                : moment(new Date(parseInt(message.createdAt))).format(
-                    "h:mm a"
-                  )}
-            </DateText>
-          </Chat>
-        ))}
-        <div ref={messageEndRef} />
-      </ChatContainer>
-      <InputContainer>
-        <TextField
-          id="outlined-multiline-static"
-          multiline
-          variant="outlined"
-          style={{ width: "100%" }}
-          size="small"
-          value={textValue}
-          onChange={(e) => setTextValue(e.target.value)}
-          classes={{
-            root: classes.textInputRoot,
-          }}
-        />
-        <IconButton
-          aria-label="delete"
-          size="small"
-          disabled={!textValue?.length}
-          onClick={handleClick}
-          className={classes.iconButton}
-        >
-          <SendIcon fontSize="small" />
-        </IconButton>
-      </InputContainer>
+      {loading ? (
+        <LoadingContainer>
+          <CircularProgress />
+        </LoadingContainer>
+      ) : (
+        <ChatContainer>
+          {messages.map((message) => (
+            <Chat key={message.id}>
+              <div>
+                <b>{`${message.user.name}:`}</b> {`${message.content}`}
+              </div>
+              <DateText>
+                {message.createdAt.includes("T")
+                  ? moment(message.createdAt).format("h:mm a")
+                  : moment(new Date(parseInt(message.createdAt))).format(
+                      "h:mm a"
+                    )}
+              </DateText>
+            </Chat>
+          ))}
+          <div ref={messageEndRef} />
+        </ChatContainer>
+      )}
+      {isAuthenticated ? (
+        <InputContainer>
+          <TextField
+            id="outlined-multiline-static"
+            multiline
+            variant="outlined"
+            style={{ width: "100%" }}
+            size="small"
+            value={textValue}
+            onChange={(e) => setTextValue(e.target.value)}
+            classes={{
+              root: classes.textInputRoot,
+            }}
+          />
+          <IconButton
+            aria-label="delete"
+            size="small"
+            disabled={!textValue?.length}
+            onClick={handleClick}
+            className={classes.iconButton}
+          >
+            <SendIcon fontSize="small" />
+          </IconButton>
+        </InputContainer>
+      ) : (
+        <LoginContainer>
+          <Button variant="contained" onClick={loginWithRedirect}>
+            Login to chat
+          </Button>
+        </LoginContainer>
+      )}
     </Container>
   );
 }

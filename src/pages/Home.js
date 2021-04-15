@@ -138,7 +138,7 @@ const Header = styled.div`
   right: 0;
   padding: 0rem 1.25rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
   background-color: #f2efe4;
@@ -163,6 +163,7 @@ export default function Home() {
   const history = useHistory();
   const {
     isAuthenticated,
+    user,
     loading: authLoading,
     loginWithRedirect,
     logout,
@@ -197,7 +198,8 @@ export default function Home() {
     - Fetch and scrape data from clubhouse
     - Test on phone
 
-    - Switch out the favicon
+    - Switch out the favicon ✅
+    - make sure loading is not weird, maybe remake clubhouse's loading indicator
     - center and max width for desktop
     - CSS when input extends beyond 3 lines
     - Ship it >:)
@@ -220,28 +222,44 @@ export default function Home() {
 
     if (chatRoom) {
       history.push(`/room/${splitURL[4]}`);
-    }
-
-    // chatRoom does not exist
-    if (!isAuthenticated) {
-      setViewModal(true);
       return;
     }
 
-    await createChatRoom({
-      variables: {
-        title: "temp title",
-        url: inputValue,
-        id: splitURL[4],
-      },
-    });
+    // chatRoom does not exist
+    if (!isAuthenticated && !chatRoom) {
+      setViewModal(true);
+      return;
+    } else {
+      console.log("what the fuck");
+      console.log({ isAuthenticated, chatRoom });
+      let roomTitle;
+      fetch(inputValue)
+        .then((res) => res.text())
+        .then((html) => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, "text/html");
 
-    history.push(`/room/${splitURL[4]}`);
+          const title = doc.title;
+          roomTitle = title.split("-")[0];
+        })
+        .catch((err) => console.log("bad", err));
+
+      await createChatRoom({
+        variables: {
+          title: "new title",
+          url: inputValue,
+          id: splitURL[4],
+        },
+      });
+
+      history.push(`/room/${splitURL[4]}`);
+    }
   }
 
   return (
     <Container>
       <Header>
+        {isAuthenticated ? <Text>{user?.name}</Text> : <div />}
         <Button
           size="small"
           variant="contained"

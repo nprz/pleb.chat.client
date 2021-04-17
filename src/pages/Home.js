@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useAuth0 } from "../utils/auth";
 import { useHistory } from "react-router-dom";
 import { loader } from "graphql.macro";
+import isEmpty from "lodash/isEmpty";
 import { useMutation, useLazyQuery } from "@apollo/client";
 
 const CREATE_CHATROOM = loader("../mutations/createChatRoom.gql");
@@ -159,6 +160,7 @@ const ModalBody = styled.div`
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [viewModal, setViewModal] = useState(false);
+  const [chatRoomId, setChatRoomId] = useState();
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -172,11 +174,50 @@ export default function Home() {
   const [
     getChatRoom,
     { loading: getChatRoomLoading, data: { chatRoom } = {} },
-  ] = useLazyQuery(GET_CHATROOM);
+  ] = useLazyQuery(GET_CHATROOM, {
+    onCompleted: async ({ chatRoom = {} }) => {
+      if (!isEmpty(chatRoom)) {
+        history.push(`/room/${chatRoomId}`);
+        return;
+      }
+
+      if (isEmpty(chatRoom) && !isAuthenticated) {
+        setViewModal(true);
+        return;
+      }
+
+      // else
+      const response = await fetch(inputValue);
+      const text = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/html");
+      const roomTitle = doc.title.split("-")[0];
+
+      const newChatRoom = await createChatRoom({
+        variables: {
+          title: roomTitle,
+          url: inputValue,
+          id: chatRoomId,
+        },
+      });
+      console.log(newChatRoom);
+      history.push(`/room/${chatRoomId}`);
+    },
+  });
 
   useEffect(() => {
     document.title = "Pleb Chat";
   }, []);
+
+  useEffect(() => {
+    if (chatRoomId) {
+      getChatRoom({
+        variables: {
+          chatRoomId,
+        },
+      });
+    }
+  }, [chatRoomId]);
 
   function handleType(e) {
     setInputValue(e.target.value);
@@ -214,47 +255,7 @@ export default function Home() {
   async function handleCreateRoom() {
     const splitURL = inputValue.split("/");
     if (splitURL.length !== 5) return;
-
-    await getChatRoom({
-      variables: {
-        chatRoomId: splitURL[4],
-      },
-    });
-
-    if (chatRoom) {
-      history.push(`/room/${splitURL[4]}`);
-      return;
-    }
-
-    // chatRoom does not exist
-    if (!isAuthenticated && !chatRoom) {
-      setViewModal(true);
-      return;
-    } else {
-      console.log("what the fuck");
-      console.log({ isAuthenticated, chatRoom });
-      let roomTitle;
-      fetch(inputValue)
-        .then((res) => res.text())
-        .then((html) => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, "text/html");
-
-          const title = doc.title;
-          roomTitle = title.split("-")[0];
-        })
-        .catch((err) => console.log("bad", err));
-
-      await createChatRoom({
-        variables: {
-          title: "new title",
-          url: inputValue,
-          id: splitURL[4],
-        },
-      });
-
-      history.push(`/room/${splitURL[4]}`);
-    }
+    setChatRoomId(splitURL[4]);
   }
 
   return (

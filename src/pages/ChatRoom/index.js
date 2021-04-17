@@ -105,12 +105,13 @@ export default function ChatRoom() {
   }, [user]);
   const {
     loading,
-    data: { chatRoom: { messages = [] } = {} } = {},
+    data: { chatRoom: { messages = [], title = "" } = {} } = {},
     subscribeToMore = () => {},
   } = useQuery(GET_CHATROOM, {
     variables: {
       chatRoomId,
     },
+    fetchPolicy: "network-only",
   });
   const [post, { loading: postLoading }] = useMutation(POST);
 
@@ -150,10 +151,9 @@ export default function ChatRoom() {
     },
   });
 
-  console.log(isAuthenticated);
   return (
     <Container>
-      <Header>{chatRoomId}</Header>
+      <Header>{title}</Header>
       {loading ? (
         <LoadingContainer>
           <CircularProgress />

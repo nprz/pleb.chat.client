@@ -139,7 +139,7 @@ const Header = styled.div`
   right: 0;
   padding: 0rem 1.25rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
   background-color: #f2efe4;
@@ -161,6 +161,8 @@ export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [viewModal, setViewModal] = useState(false);
   const [chatRoomId, setChatRoomId] = useState();
+  const [urlError, setUrlError] = useState();
+
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -193,14 +195,13 @@ export default function Home() {
       const doc = parser.parseFromString(text, "text/html");
       const roomTitle = doc.title.split("-")[0];
 
-      const newChatRoom = await createChatRoom({
+      await createChatRoom({
         variables: {
           title: roomTitle,
           url: inputValue,
           id: chatRoomId,
         },
       });
-      console.log(newChatRoom);
       history.push(`/room/${chatRoomId}`);
     },
   });
@@ -221,6 +222,25 @@ export default function Home() {
 
   function handleType(e) {
     setInputValue(e.target.value);
+
+    try {
+      const url = new URL(e.target.value);
+
+      if (url.hostname !== "joinclubhouse.com") {
+        setUrlError(true);
+        return;
+      }
+
+      const path = url.pathname.split("/");
+      if (path.length !== 3 || path[1] !== "room" || !path[2]?.length) {
+        setUrlError(true);
+        return;
+      }
+
+      setUrlError(false);
+    } catch (error) {
+      setUrlError(true);
+    }
   }
 
   function handleClear() {
@@ -243,25 +263,18 @@ export default function Home() {
     - make sure loading is not weird, maybe remake clubhouse's loading indicator
     - center and max width for desktop
     - CSS when input extends beyond 3 lines
+    - Logic to make sure room actually exists and is ongoing
     - Ship it >:)
-    - comment
   */
 
-  // TODO: validate URL with regex
-  // display modal indicating the input
-  // is not a url, don't talk like a robot
-  // maybe a gif showing where to get the url?
-  // maby use link instead of history?
   async function handleCreateRoom() {
     const splitURL = inputValue.split("/");
-    if (splitURL.length !== 5) return;
     setChatRoomId(splitURL[4]);
   }
 
   return (
     <Container>
       <Header>
-        {isAuthenticated ? <Text>{user?.name}</Text> : <div />}
         <Button
           size="small"
           variant="contained"
@@ -293,6 +306,8 @@ export default function Home() {
           value={inputValue}
           onChange={handleType}
           className={classes.textField}
+          error={urlError}
+          helperText={urlError ? "Invalid clubhouse URL" : ""}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -309,7 +324,7 @@ export default function Home() {
         <Button
           onClick={handleCreateRoom}
           variant="contained"
-          disabled={!inputValue.length}
+          disabled={!inputValue.length || urlError}
         >
           Create Room
         </Button>

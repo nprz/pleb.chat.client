@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Loader from "../components/Loader";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
@@ -141,7 +142,6 @@ const Header = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  border-bottom: 1px solid #e0e0e0;
   background-color: #f2efe4;
 `;
 
@@ -172,7 +172,10 @@ export default function Home() {
     loginWithRedirect,
     logout,
   } = useAuth0();
-  const [createChatRoom, { data, loading }] = useMutation(CREATE_CHATROOM);
+  const [
+    createChatRoom,
+    { data, loading: createChatRoomLoading },
+  ] = useMutation(CREATE_CHATROOM);
   const [
     getChatRoom,
     { loading: getChatRoomLoading, data: { chatRoom } = {} },
@@ -205,6 +208,8 @@ export default function Home() {
       history.push(`/room/${chatRoomId}`);
     },
   });
+
+  const loading = createChatRoomLoading || getChatRoomLoading;
 
   useEffect(() => {
     document.title = "Pleb Chat";
@@ -249,21 +254,16 @@ export default function Home() {
 
   /*
     TODO:
-    - Redis server ✅
     - Check settings for all these services
     - Turn off AWS
-    - Scroll down when posting ✅
-    - Regex url 
     - Making sure flow on log in actually works
     - Make sure flow when logged out actually works
-    - Fetch and scrape data from clubhouse
-    - Test on phone
-
-    - Switch out the favicon ✅
-    - make sure loading is not weird, maybe remake clubhouse's loading indicator
     - center and max width for desktop
-    - CSS when input extends beyond 3 lines
+    
+    - make sure loading is not weird, maybe remake clubhouse's loading indicator
     - Logic to make sure room actually exists and is ongoing
+    - Show username when logged in, logout / setting screen
+    - Make sure DB url is pointing in the correct spot
     - Ship it >:)
   */
 
@@ -273,76 +273,79 @@ export default function Home() {
   }
 
   return (
-    <Container>
-      <Header>
-        <Button
-          size="small"
-          variant="contained"
-          onClick={isAuthenticated ? logout : loginWithRedirect}
-        >
-          {isAuthenticated ? "Logout" : "Login"}
-        </Button>
-      </Header>
-      <ContentContainer>
-        <TitleContainer>
-          <Emoji>👋</Emoji>
-          <TitleText>Pleb Chat</TitleText>
-        </TitleContainer>
-        <Spacer />
-        <Text>
-          Hey, you don't have enough followers to get on stage and you don't
-          know what you'd say in front of all those people anyway.
-        </Text>
-
-        <Spacer />
-        <Text>Pleb Chat is here for you.</Text>
-
-        <Spacer />
-        <Text>Join the conversation. Join Pleb Chat.</Text>
-        <Spacer />
-
-        <TextField
-          label="Room URL"
-          value={inputValue}
-          onChange={handleType}
-          className={classes.textField}
-          error={urlError}
-          helperText={urlError ? "Invalid clubhouse URL" : ""}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleClear}>
-                  {inputValue.length ? <ClearIcon /> : undefined}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Spacer />
-        <Spacer />
-
-        <Button
-          onClick={handleCreateRoom}
-          variant="contained"
-          disabled={!inputValue.length || urlError}
-        >
-          Create Room
-        </Button>
-      </ContentContainer>
-      <Modal
-        open={viewModal}
-        onClose={() => setViewModal(false)}
-        classes={{ root: classes.modalRoot }}
-      >
-        <ModalBody>
-          <div>That room has not been created yet.</div>
-          <div>Log in to create a new room.</div>
-          <Spacer />
-          <Button variant="contained" onClick={loginWithRedirect}>
-            {authLoading ? <CircularProgress /> : "Login"}
+    <>
+      {true && <Loader />}
+      <Container>
+        <Header>
+          <Button
+            size="small"
+            variant="contained"
+            onClick={isAuthenticated ? logout : loginWithRedirect}
+          >
+            {isAuthenticated ? "Logout" : "Login"}
           </Button>
-        </ModalBody>
-      </Modal>
-    </Container>
+        </Header>
+        <ContentContainer>
+          <TitleContainer>
+            <Emoji>👋</Emoji>
+            <TitleText>Pleb Chat</TitleText>
+          </TitleContainer>
+          <Spacer />
+          <Text>
+            Hey, you don't have enough followers to get on stage and you don't
+            know what you'd say in front of all those people anyway.
+          </Text>
+
+          <Spacer />
+          <Text>Pleb Chat is here for you.</Text>
+
+          <Spacer />
+          <Text>Join the conversation. Join Pleb Chat.</Text>
+          <Spacer />
+
+          <TextField
+            label="Room URL"
+            value={inputValue}
+            onChange={handleType}
+            className={classes.textField}
+            error={urlError}
+            helperText={urlError ? "Invalid clubhouse URL" : ""}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleClear}>
+                    {inputValue.length ? <ClearIcon /> : undefined}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Spacer />
+          <Spacer />
+
+          <Button
+            onClick={handleCreateRoom}
+            variant="contained"
+            disabled={!inputValue.length || urlError}
+          >
+            Create Room
+          </Button>
+        </ContentContainer>
+        <Modal
+          open={viewModal}
+          onClose={() => setViewModal(false)}
+          classes={{ root: classes.modalRoot }}
+        >
+          <ModalBody>
+            <div>That room has not been created yet.</div>
+            <div>Log in to create a new room.</div>
+            <Spacer />
+            <Button variant="contained" onClick={loginWithRedirect}>
+              {authLoading ? <CircularProgress /> : "Login"}
+            </Button>
+          </ModalBody>
+        </Modal>
+      </Container>
+    </>
   );
 }

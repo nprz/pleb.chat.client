@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -14,33 +14,40 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const LoadingDotContainer = styled.div`
+  width: 400px;
+  height: 50px;
+`;
+
 const LoadingDot = styled.div`
   height: 50px;
   width: 50px;
   border-radius: 25px;
-  background-color: ${({ value, current }) =>
-    current === value ? "black" : "#e1e2e1"};
+  background-color: #e1e2e1;
   margin: 0.5rem;
+  position: relative;
+  animation-name: load;
+  animation-duration 1s;
+  animation-timing-function: steps(3, jump-start);
+  animation-iteration-count: infinite;
+
+  @keyframes load {
+    from {
+      left: 0;
+    }
+
+    to {
+      left: 100%;
+    }
+  }
 `;
 
 export default function Loader() {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    setInterval(() => {
-      if (current < 2) {
-        setCurrent(current + 1);
-      } else {
-        setCurrent(0);
-      }
-    }, 1000);
-  }, []);
-
   return (
     <Container>
-      <LoadingDot value={0} current={current} />
-      <LoadingDot value={1} current={current} />
-      <LoadingDot value={2} current={current} />
+      <LoadingDotContainer>
+        <LoadingDot />
+      </LoadingDotContainer>
     </Container>
   );
 }

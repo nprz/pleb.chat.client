@@ -15,20 +15,20 @@ const Container = styled.div`
 `;
 
 const LoadingDotContainer = styled.div`
-  width: 400px;
+  width: 174px;
   height: 50px;
 `;
 
-const LoadingDot = styled.div`
+const AnimatedLoadingDot = styled.div`
   height: 50px;
   width: 50px;
   border-radius: 25px;
-  background-color: #e1e2e1;
-  margin: 0.5rem;
+  background-color: black;
   position: relative;
+  z-index: 2;
   animation-name: load;
-  animation-duration 1s;
-  animation-timing-function: steps(3, jump-start);
+  animation-duration 2s;
+  animation-timing-function: steps(3);
   animation-iteration-count: infinite;
 
   @keyframes load {
@@ -37,17 +37,40 @@ const LoadingDot = styled.div`
     }
 
     to {
-      left: 100%;
+      left: 184px;
     }
   }
 `;
 
+const LoadingDot = styled.div`
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  background-color: #e1e2e1;
+`;
+
+const Spacer = styled.div`
+  height: 100%;
+  width: 12px;
+`;
+
 export default function Loader() {
   return (
-    <Container>
-      <LoadingDotContainer>
-        <LoadingDot />
-      </LoadingDotContainer>
-    </Container>
+    <>
+      <Container>
+        <LoadingDotContainer>
+          <LoadingDot />
+          <Spacer />
+          <LoadingDot />
+          <Spacer />
+          <LoadingDot />
+        </LoadingDotContainer>
+      </Container>
+      <Container>
+        <LoadingDotContainer>
+          <AnimatedLoadingDot />
+        </LoadingDotContainer>
+      </Container>
+    </>
   );
 }

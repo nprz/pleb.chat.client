@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import PersonIcon from "@material-ui/icons/Person";
+import { useAuth0 } from "../utils/auth";
 
 const Container = styled.div`
   height: 100%;
@@ -11,7 +13,6 @@ const Container = styled.div`
   top: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   background-color: #f2efe4;
 `;
 
@@ -31,10 +32,24 @@ const Header = styled.div`
   padding: 0rem 1.25rem;
 `;
 
+const InfoListItem = styled.div`
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 2rem 1rem;
+  margin-top: 60px;
+`;
+
+// TODO: block this path if a user is not logged in
 export default function Settings() {
+  const { user } = useAuth0();
+
   return (
     <Container>
       <Header>Settings</Header>
+      <InfoListItem>
+        <PersonIcon /> {user?.email}
+      </InfoListItem>
     </Container>
   );
 }

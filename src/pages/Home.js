@@ -5,9 +5,8 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import Modal from "@material-ui/core/Modal";
 import ClearIcon from "@material-ui/icons/Close";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import PlebChatModal from "../components/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../utils/auth";
@@ -24,18 +23,19 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     width: "100%",
   },
-  modalRoot: {
-    border: "1px solid red",
-  },
 }));
 
 const Container = styled.div`
   height: 100%;
   width: 100%;
+  position: absolute;
   right: 0;
   left: 0;
   bottom: 0;
   top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: #f2efe4;
 `;
 
@@ -46,7 +46,6 @@ const ContentContainer = styled.div`
   justify-content: center;
   max-width: 400px;
   margin: 24px 0px;
-  height: 100%;
   padding: 0rem 1.25rem;
 `;
 
@@ -134,7 +133,7 @@ const Spacer = styled.div`
 
 const Header = styled.div`
   height: 60px;
-  position: sticky;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -145,23 +144,12 @@ const Header = styled.div`
   background-color: #f2efe4;
 `;
 
-const ModalBody = styled.div`
-  background-color: #f2efe4;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1.5rem;
-  text-align: center;
-  transform: translate(0%, 120%);
-  outline-style: none;
-`;
-
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [viewModal, setViewModal] = useState(false);
   const [chatRoomId, setChatRoomId] = useState();
   const [urlError, setUrlError] = useState();
+  const [roomEndedModal, setRoomEndedModal] = useState();
 
   const classes = useStyles();
   const history = useHistory();
@@ -176,38 +164,47 @@ export default function Home() {
     createChatRoom,
     { data, loading: createChatRoomLoading },
   ] = useMutation(CREATE_CHATROOM);
-  const [
-    getChatRoom,
-    { loading: getChatRoomLoading, data: { chatRoom } = {} },
-  ] = useLazyQuery(GET_CHATROOM, {
-    onCompleted: async ({ chatRoom = {} }) => {
-      if (!isEmpty(chatRoom)) {
+  const [getChatRoom, { loading: getChatRoomLoading }] = useLazyQuery(
+    GET_CHATROOM,
+    {
+      fetchPolicy: "network-only",
+      onCompleted: async ({ chatRoom = {} }) => {
+        if (!isEmpty(chatRoom)) {
+          history.push(`/room/${chatRoomId}`);
+          return;
+        }
+
+        if (isEmpty(chatRoom) && !isAuthenticated) {
+          setViewModal(true);
+          return;
+        }
+
+        // else
+        const response = await fetch(inputValue);
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, "text/html");
+        const hasEnded = doc.getElementsByClassName(
+          "mt-4 px-2 text-center text-base text-gray-800"
+        );
+
+        if (hasEnded.length) {
+          setRoomEndedModal(true);
+          return;
+        }
+
+        const roomTitle = doc.title.split("-")[0];
+        await createChatRoom({
+          variables: {
+            title: roomTitle,
+            url: inputValue,
+            id: chatRoomId,
+          },
+        });
         history.push(`/room/${chatRoomId}`);
-        return;
-      }
-
-      if (isEmpty(chatRoom) && !isAuthenticated) {
-        setViewModal(true);
-        return;
-      }
-
-      // else
-      const response = await fetch(inputValue);
-      const text = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, "text/html");
-      const roomTitle = doc.title.split("-")[0];
-
-      await createChatRoom({
-        variables: {
-          title: roomTitle,
-          url: inputValue,
-          id: chatRoomId,
-        },
-      });
-      history.push(`/room/${chatRoomId}`);
-    },
-  });
+      },
+    }
+  );
 
   const loading = createChatRoomLoading || getChatRoomLoading;
 
@@ -223,7 +220,7 @@ export default function Home() {
         },
       });
     }
-  }, [chatRoomId]);
+  }, [chatRoomId, getChatRoom]);
 
   function handleType(e) {
     setInputValue(e.target.value);
@@ -260,21 +257,36 @@ export default function Home() {
     - Make sure flow when logged out actually works
     - center and max width for desktop
     
-    - make sure loading is not weird, maybe remake clubhouse's loading indicator
-    - Logic to make sure room actually exists and is ongoing
+    - make sure loading is not weird, maybe remake clubhouse's loading indicator ✅
+    - use state instead of loading indicator for fluid loading state
+    - Logic to make sure room actually exists and is ongoing ✅
     - Show username when logged in, logout / setting screen
     - Make sure DB url is pointing in the correct spot
+    - dumb bug when loading directly into a chatroom
+    - chron job to delete inactive rooms
     - Ship it >:)
   */
 
-  async function handleCreateRoom() {
+  function handleCreateRoom() {
     const splitURL = inputValue.split("/");
     setChatRoomId(splitURL[4]);
   }
 
+  function handleClearViewModal() {
+    setChatRoomId("");
+    setViewModal(false);
+  }
+
+  function handleClearRoomEndedModal() {
+    setChatRoomId("");
+    setRoomEndedModal(false);
+  }
+
+  console.log(chatRoomId);
+
   return (
     <>
-      {true && <Loader />}
+      {loading && <Loader />}
       <Container>
         <Header>
           <Button
@@ -331,20 +343,20 @@ export default function Home() {
             Create Room
           </Button>
         </ContentContainer>
-        <Modal
-          open={viewModal}
-          onClose={() => setViewModal(false)}
-          classes={{ root: classes.modalRoot }}
+        <PlebChatModal open={viewModal} handleClose={handleClearViewModal}>
+          <div>That room has not been created yet.</div>
+          <div>Log in to create a new room.</div>
+          <Spacer />
+          <Button variant="contained" onClick={loginWithRedirect}>
+            Login
+          </Button>
+        </PlebChatModal>
+        <PlebChatModal
+          open={roomEndedModal}
+          handleClose={handleClearRoomEndedModal}
         >
-          <ModalBody>
-            <div>That room has not been created yet.</div>
-            <div>Log in to create a new room.</div>
-            <Spacer />
-            <Button variant="contained" onClick={loginWithRedirect}>
-              {authLoading ? <CircularProgress /> : "Login"}
-            </Button>
-          </ModalBody>
-        </Modal>
+          <div>This room does not exist or has already ended 😔</div>
+        </PlebChatModal>
       </Container>
     </>
   );

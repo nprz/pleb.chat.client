@@ -17,6 +17,7 @@ const Container = styled.div`
 const LoadingDotContainer = styled.div`
   width: 174px;
   height: 50px;
+  display: flex;
 `;
 
 const AnimatedLoadingDot = styled.div`
@@ -27,7 +28,7 @@ const AnimatedLoadingDot = styled.div`
   position: relative;
   z-index: 2;
   animation-name: load;
-  animation-duration 2s;
+  animation-duration .5s;
   animation-timing-function: steps(3);
   animation-iteration-count: infinite;
 

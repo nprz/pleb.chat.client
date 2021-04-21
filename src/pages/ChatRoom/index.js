@@ -7,7 +7,8 @@ import TextField from "@material-ui/core/TextField";
 import SendIcon from "@material-ui/icons/Send";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import Tooltip from "@material-ui/core/Tooltip";
+import Loader from "../../components/Loader";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../../utils/auth";
@@ -49,6 +50,15 @@ const Header = styled.div`
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
   background-color: #bfbdb0;
+  font-weight: bold;
+  font-size: 18px;
+`;
+
+const HeaderText = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 1rem;
 `;
 
 const ChatContainer = styled.div`
@@ -98,13 +108,18 @@ export default function ChatRoom() {
   const [textValue, setTextValue] = useState();
   const messageEndRef = useRef(null);
   const { chatRoomId } = useParams();
-  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
+  const {
+    user,
+    isAuthenticated,
+    loginWithRedirect,
+    loading: authLoading,
+  } = useAuth0();
   const userId = useMemo(() => {
     const { sub = "|" } = user || {};
     return sub.split("|")[1];
   }, [user]);
   const {
-    loading,
+    loading: roomLoading,
     data: { chatRoom: { messages = [], title = "" } = {} } = {},
     subscribeToMore = () => {},
   } = useQuery(GET_CHATROOM, {
@@ -114,6 +129,7 @@ export default function ChatRoom() {
     fetchPolicy: "network-only",
   });
   const [post, { loading: postLoading }] = useMutation(POST);
+  const loading = roomLoading || authLoading;
 
   useEffect(() => {
     messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
@@ -152,62 +168,67 @@ export default function ChatRoom() {
   });
 
   return (
-    <Container>
-      <Header>{title}</Header>
-      {loading ? (
-        <LoadingContainer>
-          <CircularProgress />
-        </LoadingContainer>
-      ) : (
-        <ChatContainer>
-          {messages.map((message) => (
-            <Chat key={message.id}>
-              <div>
-                <b>{`${message.user.name}:`}</b> {`${message.content}`}
-              </div>
-              <DateText>
-                {message.createdAt.includes("T")
-                  ? moment(message.createdAt).format("h:mm a")
-                  : moment(new Date(parseInt(message.createdAt))).format(
-                      "h:mm a"
-                    )}
-              </DateText>
-            </Chat>
-          ))}
-          <div ref={messageEndRef} />
-        </ChatContainer>
-      )}
-      {isAuthenticated ? (
-        <InputContainer>
-          <TextField
-            id="outlined-multiline-static"
-            multiline
-            variant="outlined"
-            style={{ width: "100%" }}
-            size="small"
-            value={textValue}
-            onChange={(e) => setTextValue(e.target.value)}
-            classes={{
-              root: classes.textInputRoot,
-            }}
-          />
-          <IconButton
-            aria-label="delete"
-            size="small"
-            disabled={!textValue?.length}
-            onClick={handleClick}
-            className={classes.iconButton}
-          >
-            <SendIcon fontSize="small" />
-          </IconButton>
-        </InputContainer>
-      ) : (
-        <LoginContainer>
-          <Button variant="contained" onClick={loginWithRedirect}>
-            Login to chat
-          </Button>
-        </LoginContainer>
-      )}
-    </Container>
+    <>
+      {loading && <Loader />}
+      <Container>
+        <Header>
+          <Tooltip title={title}>
+            <HeaderText>{title}</HeaderText>
+          </Tooltip>
+        </Header>
+        {loading ? (
+          <LoadingContainer />
+        ) : (
+          <ChatContainer>
+            {messages.map((message) => (
+              <Chat key={message.id}>
+                <div>
+                  <b>{`${message.user.name}:`}</b> {`${message.content}`}
+                </div>
+                <DateText>
+                  {message.createdAt.includes("T")
+                    ? moment(message.createdAt).format("h:mm a")
+                    : moment(new Date(parseInt(message.createdAt))).format(
+                        "h:mm a"
+                      )}
+                </DateText>
+              </Chat>
+            ))}
+            <div ref={messageEndRef} />
+          </ChatContainer>
+        )}
+        {isAuthenticated ? (
+          <InputContainer>
+            <TextField
+              id="outlined-multiline-static"
+              multiline
+              variant="outlined"
+              style={{ width: "100%" }}
+              size="small"
+              value={textValue}
+              onChange={(e) => setTextValue(e.target.value)}
+              classes={{
+                root: classes.textInputRoot,
+              }}
+            />
+            <IconButton
+              aria-label="delete"
+              size="small"
+              disabled={!textValue?.length}
+              onClick={handleClick}
+              className={classes.iconButton}
+            >
+              <SendIcon fontSize="small" />
+            </IconButton>
+          </InputContainer>
+        ) : (
+          <LoginContainer>
+            <Button variant="contained" onClick={loginWithRedirect}>
+              Login to chat
+            </Button>
+          </LoginContainer>
+        )}
+      </Container>
+    </>
   );
 }

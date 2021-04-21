@@ -5,6 +5,7 @@ import history from "./utils/history";
 // Components
 import Home from "./pages/Home";
 import ChatRoom from "./pages/ChatRoom";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
         </Route>
         <Route path="/room/:chatRoomId">
           <ChatRoom />
+        </Route>
+        <Route path="/settings">
+          <Settings />
         </Route>
       </Switch>
     </Router>

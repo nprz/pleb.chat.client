@@ -167,8 +167,6 @@ export default function ChatRoom() {
     },
   });
 
-  console.log(title);
-
   return (
     <>
       {loading && <Loader />}

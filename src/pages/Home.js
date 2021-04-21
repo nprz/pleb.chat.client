@@ -6,7 +6,9 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ClearIcon from "@material-ui/icons/Close";
+import SettingsIcon from "@material-ui/icons/Settings";
 import PlebChatModal from "../components/Modal";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../utils/auth";
@@ -282,19 +284,31 @@ export default function Home() {
     setRoomEndedModal(false);
   }
 
+  function renderHeaderContent() {
+    if (authLoading) return;
+
+    if (isAuthenticated) {
+      return (
+        <IconButton>
+          <Link to="/settings">
+            <SettingsIcon />
+          </Link>
+        </IconButton>
+      );
+    }
+
+    return (
+      <Button size="small" variant="contained" onClick={loginWithRedirect}>
+        Login
+      </Button>
+    );
+  }
+
   return (
     <>
       {loading && <Loader />}
       <Container>
-        <Header>
-          <Button
-            size="small"
-            variant="contained"
-            onClick={isAuthenticated ? logout : loginWithRedirect}
-          >
-            {isAuthenticated ? "Logout" : "Login"}
-          </Button>
-        </Header>
+        <Header>{renderHeaderContent()}</Header>
         <ContentContainer>
           <TitleContainer>
             <Emoji>👋</Emoji>

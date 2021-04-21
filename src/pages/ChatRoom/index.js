@@ -128,7 +128,7 @@ export default function ChatRoom() {
     },
     fetchPolicy: "network-only",
   });
-  const [post, { loading: postLoading }] = useMutation(POST);
+  const [post] = useMutation(POST);
   const loading = roomLoading || authLoading;
 
   useEffect(() => {
@@ -167,13 +167,15 @@ export default function ChatRoom() {
     },
   });
 
+  console.log(title);
+
   return (
     <>
       {loading && <Loader />}
       <Container>
         <Header>
           <Tooltip title={title}>
-            <HeaderText>{title}</HeaderText>
+            <HeaderText>{loading ? "" : title}</HeaderText>
           </Tooltip>
         </Header>
         {loading ? (
@@ -197,7 +199,9 @@ export default function ChatRoom() {
             <div ref={messageEndRef} />
           </ChatContainer>
         )}
-        {isAuthenticated ? (
+        {loading ? (
+          <InputContainer />
+        ) : isAuthenticated ? (
           <InputContainer>
             <TextField
               id="outlined-multiline-static"

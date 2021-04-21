@@ -282,8 +282,6 @@ export default function Home() {
     setRoomEndedModal(false);
   }
 
-  console.log(chatRoomId);
-
   return (
     <>
       {loading && <Loader />}
@@ -343,7 +341,11 @@ export default function Home() {
             Create Room
           </Button>
         </ContentContainer>
-        <PlebChatModal open={viewModal} handleClose={handleClearViewModal}>
+        <PlebChatModal
+          open={viewModal}
+          handleClose={handleClearViewModal}
+          number={220}
+        >
           <div>That room has not been created yet.</div>
           <div>Log in to create a new room.</div>
           <Spacer />
@@ -354,8 +356,13 @@ export default function Home() {
         <PlebChatModal
           open={roomEndedModal}
           handleClose={handleClearRoomEndedModal}
+          number={220}
         >
-          <div>This room does not exist or has already ended 😔</div>
+          <div>This room does not exist or has already ended </div>
+          <Spacer />
+          <Button onClick={handleClearRoomEndedModal} variant="contained">
+            Okay 😔
+          </Button>
         </PlebChatModal>
       </Container>
     </>

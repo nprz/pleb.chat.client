@@ -1,13 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
-
-const useStyles = makeStyles((theme) => ({
-  modalRoot: {
-    border: "1px solid red",
-  },
-}));
 
 const ModalBody = styled.div`
   background-color: #f2efe4;
@@ -17,20 +10,14 @@ const ModalBody = styled.div`
   align-items: center;
   padding: 1.5rem;
   text-align: center;
-  transform: translate(0%, 120%);
+  transform: ${({ translate }) => `translate(0%, ${translate}%)`};
   outline-style: none;
 `;
 
-export default function PlebChatModal({ open, handleClose, children }) {
-  const classes = useStyles();
-
+export default function PlebChatModal({ open, handleClose, number, children }) {
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      classes={{ root: classes.modalRoot }}
-    >
-      <ModalBody>{children}</ModalBody>
+    <Modal open={open} onClose={handleClose}>
+      <ModalBody translate={number}>{children}</ModalBody>
     </Modal>
   );
 }

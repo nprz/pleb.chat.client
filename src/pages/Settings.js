@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import PersonIcon from "@material-ui/icons/Person";
 import { useAuth0 } from "../utils/auth";
+import { useHistory } from "react-router-dom";
 
 const Container = styled.div`
   height: 100%;
@@ -32,16 +32,33 @@ const Header = styled.div`
   padding: 0rem 1.25rem;
 `;
 
+const BackArrow = styled.div`
+  font-size: 2rem;
+`;
+
+const Spacer = styled.div`
+  width: 33%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+`;
+
+const HeaderText = styled.div`
+  width: 33%;
+  display: flex;
+  justify-content: center;
+`;
+
 const InfoListItem = styled.div`
   display: flex;
   align-items: center;
   height: 30px;
-  padding: 2rem 1rem;
+  padding: 2rem;
   margin-top: 60px;
 `;
 
 const IconContainer = styled.div`
-  margin-right: 0.5rem;
+  margin-right: 1rem;
 `;
 
 const Text = styled.div`
@@ -51,13 +68,20 @@ const Text = styled.div`
 // TODO: block this path if a user is not logged in
 export default function Settings() {
   const { user } = useAuth0();
+  const history = useHistory();
 
-  console.log(user);
   return (
     <Container>
-      <Header>Settings</Header>
+      <Header>
+        <Spacer>
+          <BackArrow onClick={() => history.goBack()}>⬅️</BackArrow>
+        </Spacer>
+        <HeaderText>Settings</HeaderText>
+        <Spacer />
+      </Header>
       <InfoListItem>
-        <Text> 👤 {user?.email}</Text>
+        <IconContainer>👤</IconContainer>
+        <Text> {user?.email}</Text>
       </InfoListItem>
     </Container>
   );

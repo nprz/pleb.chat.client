@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     width: "100%",
   },
+  settingsIconRoot: {
+    color: "black",
+  },
 }));
 
 const Container = styled.div`
@@ -144,6 +147,14 @@ const Header = styled.div`
   justify-content: flex-end;
   align-items: center;
   background-color: #f2efe4;
+`;
+
+const IconContainer = styled.div`
+  font-size: 2rem;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 export default function Home() {
@@ -290,9 +301,9 @@ export default function Home() {
     if (isAuthenticated) {
       return (
         <IconButton>
-          <Link to="/settings">
-            <SettingsIcon />
-          </Link>
+          <StyledLink to="/settings">
+            <IconContainer>⚙️</IconContainer>
+          </StyledLink>
         </IconButton>
       );
     }

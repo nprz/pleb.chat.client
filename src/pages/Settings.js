@@ -40,15 +40,24 @@ const InfoListItem = styled.div`
   margin-top: 60px;
 `;
 
+const IconContainer = styled.div`
+  margin-right: 0.5rem;
+`;
+
+const Text = styled.div`
+  font-weight: 2rem;
+`;
+
 // TODO: block this path if a user is not logged in
 export default function Settings() {
   const { user } = useAuth0();
 
+  console.log(user);
   return (
     <Container>
       <Header>Settings</Header>
       <InfoListItem>
-        <PersonIcon /> {user?.email}
+        <Text> 👤 {user?.email}</Text>
       </InfoListItem>
     </Container>
   );

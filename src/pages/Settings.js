@@ -2,6 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import { useAuth0 } from "../utils/auth";
 import { useHistory } from "react-router-dom";
+import Card from "@material-ui/core/Card";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  cardRoot: {
+    borderRadius: 20,
+    margin: "5rem 2rem",
+    display: "flex",
+    justifyContent: "center",
+  },
+});
 
 const Container = styled.div`
   height: 100%;
@@ -53,8 +64,7 @@ const InfoListItem = styled.div`
   display: flex;
   align-items: center;
   height: 30px;
-  padding: 2rem;
-  margin-top: 60px;
+  padding: 1.5rem;
 `;
 
 const IconContainer = styled.div`
@@ -62,13 +72,14 @@ const IconContainer = styled.div`
 `;
 
 const Text = styled.div`
-  font-weight: 2rem;
+  font-weight: bold;
 `;
 
 // TODO: block this path if a user is not logged in
 export default function Settings() {
   const { user } = useAuth0();
   const history = useHistory();
+  const classes = useStyles();
 
   return (
     <Container>
@@ -79,10 +90,16 @@ export default function Settings() {
         <HeaderText>Settings</HeaderText>
         <Spacer />
       </Header>
-      <InfoListItem>
-        <IconContainer>👤</IconContainer>
-        <Text> {user?.email}</Text>
-      </InfoListItem>
+      <Card
+        classes={{
+          root: classes.cardRoot,
+        }}
+      >
+        <InfoListItem>
+          <IconContainer>👤</IconContainer>
+          <Text> {user?.email}</Text>
+        </InfoListItem>
+      </Card>
     </Container>
   );
 }

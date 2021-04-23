@@ -3,14 +3,17 @@ import styled from "styled-components";
 import { useAuth0 } from "../utils/auth";
 import { useHistory } from "react-router-dom";
 import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   cardRoot: {
     borderRadius: 20,
-    margin: "5rem 2rem",
+    margin: "5rem 2rem 0rem 2rem",
+    padding: "0rem 1rem",
     display: "flex",
     justifyContent: "center",
+    flexDirection: "column",
   },
 });
 
@@ -64,20 +67,32 @@ const InfoListItem = styled.div`
   display: flex;
   align-items: center;
   height: 30px;
-  padding: 1.5rem;
+  padding: 1.5rem 0rem;
+  width: 100%;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 30px;
+  width: 100%;
+  padding: 1.5rem 0rem;
 `;
 
 const IconContainer = styled.div`
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 `;
 
 const Text = styled.div`
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 // TODO: block this path if a user is not logged in
 export default function Settings() {
-  const { user } = useAuth0();
+  const { user, logout } = useAuth0();
   const history = useHistory();
   const classes = useStyles();
 
@@ -99,6 +114,11 @@ export default function Settings() {
           <IconContainer>👤</IconContainer>
           <Text> {user?.email}</Text>
         </InfoListItem>
+        <ButtonContainer>
+          <Button variant="contained" onClick={logout}>
+            Logout 👋
+          </Button>
+        </ButtonContainer>
       </Card>
     </Container>
   );

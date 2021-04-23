@@ -167,10 +167,8 @@ export default function Home() {
   const history = useHistory();
   const {
     isAuthenticated,
-    user,
     loading: authLoading,
     loginWithRedirect,
-    logout,
   } = useAuth0();
   const [
     createChatRoom,

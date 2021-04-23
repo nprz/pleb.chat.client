@@ -90,7 +90,6 @@ const Text = styled.div`
   white-space: nowrap;
 `;
 
-// TODO: block this path if a user is not logged in
 export default function Settings() {
   const { user, logout } = useAuth0();
   const history = useHistory();

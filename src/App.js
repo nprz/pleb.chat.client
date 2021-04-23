@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import history from "./utils/history";
+import { useAuth0 } from "./utils/auth";
 
 // Components
 import Home from "./pages/Home";
@@ -8,6 +9,8 @@ import ChatRoom from "./pages/ChatRoom";
 import Settings from "./pages/Settings";
 
 function App() {
+  const { isAuthenticated } = useAuth0();
+
   return (
     <Router history={history}>
       <Switch>
@@ -17,9 +20,11 @@ function App() {
         <Route path="/room/:chatRoomId">
           <ChatRoom />
         </Route>
-        <Route path="/settings">
-          <Settings />
-        </Route>
+        {isAuthenticated && (
+          <Route path="/settings">
+            <Settings />
+          </Route>
+        )}
       </Switch>
     </Router>
   );

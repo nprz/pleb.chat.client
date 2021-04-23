@@ -263,14 +263,14 @@ export default function Home() {
     TODO:
     - Check settings for all these services
     - Turn off AWS
-    - Making sure flow on log in actually works
-    - Make sure flow when logged out actually works
-    - center and max width for desktop
     
     - make sure loading is not weird, maybe remake clubhouse's loading indicator ✅
     - use state instead of loading indicator for fluid loading state
     - Logic to make sure room actually exists and is ongoing ✅
-    - Show username when logged in, logout / setting screen
+    - Show username when logged in, logout / setting screen ✅
+    - 404 page
+    - center and max width for desktop
+    - limit posting to 15sec per post
     - Make sure DB url is pointing in the correct spot
     - dumb bug when loading directly into a chatroom
     - chron job to delete inactive rooms

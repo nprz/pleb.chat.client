@@ -103,6 +103,10 @@ const DateText = styled.div`
   opacity: 40%;
 `;
 
+const SendIt = styled.div`
+  font-size: 2rem;
+`;
+
 export default function ChatRoom() {
   const classes = useStyles();
   const [textValue, setTextValue] = useState();
@@ -147,25 +151,33 @@ export default function ChatRoom() {
     setTextValue("");
   }
 
-  subscribeToMore({
-    document: NEW_MESSAGE,
-    variables: { chatRoomId },
-    updateQuery: (prev, { subscriptionData }) => {
-      if (!subscriptionData.data) return prev;
-      const newMessage = subscriptionData.data.newMessage;
-      const exists = prev.chatRoom.messages.find((m) => m.id === newMessage.id);
+  function checkForSubscribe() {
+    if (subscribeToMore) {
+      subscribeToMore({
+        document: NEW_MESSAGE,
+        variables: { chatRoomId },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev;
+          const newMessage = subscriptionData.data.newMessage;
+          const exists = prev.chatRoom.messages.find(
+            (m) => m.id === newMessage.id
+          );
 
-      if (exists) return prev;
+          if (exists) return prev;
 
-      return {
-        chatRoom: {
-          ...prev.chatRoom,
-          messages: [...prev.chatRoom.messages, newMessage],
-          __typename: prev.chatRoom.__typename,
+          return {
+            chatRoom: {
+              ...prev.chatRoom,
+              messages: [...prev.chatRoom.messages, newMessage],
+              __typename: prev.chatRoom.__typename,
+            },
+          };
         },
-      };
-    },
-  });
+      });
+    }
+  }
+
+  checkForSubscribe();
 
   return (
     <>
@@ -213,15 +225,12 @@ export default function ChatRoom() {
                 root: classes.textInputRoot,
               }}
             />
-            <IconButton
-              aria-label="delete"
-              size="small"
+            <SendIt
               disabled={!textValue?.length}
-              onClick={handleClick}
-              className={classes.iconButton}
+              onClick={textValue?.length && handleClick}
             >
-              <SendIcon fontSize="small" />
-            </IconButton>
+              🚀
+            </SendIt>
           </InputContainer>
         ) : (
           <LoginContainer>

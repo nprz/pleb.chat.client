@@ -14,6 +14,7 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
+    boxShadow: "0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)",
   },
 });
 
@@ -27,6 +28,7 @@ const Container = styled.div`
   top: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   background-color: #f2efe4;
 `;
 

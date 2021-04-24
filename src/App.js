@@ -7,6 +7,7 @@ import { useAuth0 } from "./utils/auth";
 import Home from "./pages/Home";
 import ChatRoom from "./pages/ChatRoom";
 import Settings from "./pages/Settings";
+import NoMatch from "./pages/NoMatch";
 
 function App() {
   const { isAuthenticated } = useAuth0();
@@ -25,6 +26,9 @@ function App() {
             <Settings />
           </Route>
         )}
+        <Route path="*">
+          <NoMatch />
+        </Route>
       </Switch>
     </Router>
   );

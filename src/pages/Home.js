@@ -154,6 +154,7 @@ const IconContainer = styled.div`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
+  margin-top: 0.5rem;
 `;
 
 export default function Home() {
@@ -268,7 +269,8 @@ export default function Home() {
     - use state instead of loading indicator for fluid loading state
     - Logic to make sure room actually exists and is ongoing ✅
     - Show username when logged in, logout / setting screen ✅
-    - 404 page
+    - 404 page ✅
+    - About page
     - center and max width for desktop
     - limit posting to 15sec per post
     - Make sure DB url is pointing in the correct spot
@@ -297,11 +299,9 @@ export default function Home() {
 
     if (isAuthenticated) {
       return (
-        <IconButton>
-          <StyledLink to="/settings">
-            <IconContainer>⚙️</IconContainer>
-          </StyledLink>
-        </IconButton>
+        <StyledLink to="/settings">
+          <IconContainer>⚙️</IconContainer>
+        </StyledLink>
       );
     }
 

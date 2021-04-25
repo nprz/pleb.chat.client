@@ -105,6 +105,8 @@ const DateText = styled.div`
 
 const SendIt = styled.div`
   font-size: 2rem;
+  margin-right: 12px;
+  opacity: ${({ disabled }) => (disabled ? "30%" : "100%")};
 `;
 
 export default function ChatRoom() {
@@ -225,6 +227,7 @@ export default function ChatRoom() {
                 root: classes.textInputRoot,
               }}
             />
+            {/* fix styling on this and disable correctly */}
             <SendIt
               disabled={!textValue?.length}
               onClick={textValue?.length && handleClick}

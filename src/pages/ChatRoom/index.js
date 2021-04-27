@@ -4,8 +4,6 @@ import moment from "moment";
 
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
-import SendIcon from "@material-ui/icons/Send";
-import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import Loader from "../../components/Loader";
@@ -16,6 +14,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { loader } from "graphql.macro";
 
 const GET_CHATROOM = loader("../../queries/getChatRoom.gql");
+const GET_USER_LAST_MESSAGE = loader("../../queries/getUserLastMessage.gql");
 const NEW_MESSAGE = loader("../../subscriptions/newMessage.gql");
 const POST = loader("../../mutations/post.gql");
 
@@ -104,7 +103,7 @@ const DateText = styled.div`
 `;
 
 const SendIt = styled.div`
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-right: 12px;
   opacity: ${({ disabled }) => (disabled ? "30%" : "100%")};
 `;
@@ -134,8 +133,17 @@ export default function ChatRoom() {
     },
     fetchPolicy: "network-only",
   });
+  const { loading: userLoading, data: { user: pgUser } = {} } = useQuery(
+    GET_USER_LAST_MESSAGE,
+    {
+      variables: {
+        userId,
+      },
+      skip: !userId,
+    }
+  );
   const [post] = useMutation(POST);
-  const loading = roomLoading || authLoading;
+  const loading = roomLoading || authLoading || userLoading;
 
   useEffect(() => {
     messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });

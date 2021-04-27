@@ -276,7 +276,7 @@ export default function Home() {
     - limit posting to 15sec per post
     - Make sure DB url is pointing in the correct spot
     - dumb bug when loading directly into a chatroom
-    - chron job to delete inactive rooms
+    - chron job to delete inactive rooms - will be doing this manually for the time being
     - Ship it >:)
   */
 

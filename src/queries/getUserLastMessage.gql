@@ -1,0 +1,11 @@
+query getUser($userId: ID!) {
+  user(userId: $userId) {
+    id
+    email
+    name
+    messages(first: true) {
+      id
+      createdAt
+    }
+  }
+}

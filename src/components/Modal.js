@@ -16,7 +16,7 @@ const ModalBody = styled.div`
 
 export default function PlebChatModal({ open, handleClose, number, children }) {
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open || false} onClose={handleClose}>
       <ModalBody translate={number}>{children}</ModalBody>
     </Modal>
   );

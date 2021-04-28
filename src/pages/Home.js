@@ -280,6 +280,10 @@ export default function Home() {
     - Ship it >:)
   */
 
+  /*
+    post limit: set timer for 10s after posting
+    fetch user on page load and get latest comment from 
+  */
   function handleCreateRoom() {
     const splitURL = inputValue.split("/");
     setChatRoomId(splitURL[4]);

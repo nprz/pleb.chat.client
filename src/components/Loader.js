@@ -18,6 +18,7 @@ const LoadingDotContainer = styled.div`
   width: 174px;
   height: 50px;
   display: flex;
+  z-index: 1;
 `;
 
 const AnimatedLoadingDot = styled.div`

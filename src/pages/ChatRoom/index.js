@@ -175,6 +175,7 @@ export default function ChatRoom() {
   const [post] = useMutation(POST, {
     onCompleted() {
       setTimeRemaining(10);
+      setCanPost(false);
     },
   });
 
@@ -185,13 +186,19 @@ export default function ChatRoom() {
   }, [messages]);
 
   useEffect(() => {
+    if (!lastMessage[0]?.createdAt) return;
+    console.log(lastMessage[0]?.createdAt);
+
     const current = moment();
     const last = moment(new Date(parseInt(lastMessage[0]?.createdAt)));
     const difference = current.diff(last, "seconds");
     const timeLeft = 10 - difference;
 
-    if (difference && timeLeft > 0) {
+    if (timeLeft > 0) {
       setTimeRemaining(difference);
+      setCanPost(false);
+    } else {
+      setCanPost(true);
     }
   }, [lastMessage]);
 
@@ -213,7 +220,7 @@ export default function ChatRoom() {
     setTextValue("");
   }
 
-  console.log(timeRemaining);
+  console.log(canPost);
   function checkForSubscribe() {
     if (subscribeToMore) {
       subscribeToMore({
@@ -241,6 +248,8 @@ export default function ChatRoom() {
   }
 
   checkForSubscribe();
+
+  const disabled = !textValue?.length || !canPost;
 
   return (
     <>
@@ -272,35 +281,37 @@ export default function ChatRoom() {
             <div ref={messageEndRef} />
           </ChatContainer>
         )}
-        {timeRemaining && (
-          <PostTimerContainer>
-            <Remaining remaining={timeRemaining} />
-          </PostTimerContainer>
-        )}
         {loading ? (
           <InputContainer />
         ) : isAuthenticated ? (
-          <InputContainer>
-            <TextField
-              id="outlined-multiline-static"
-              multiline
-              variant="outlined"
-              style={{ width: "100%" }}
-              size="small"
-              value={textValue}
-              onChange={(e) => setTextValue(e.target.value)}
-              classes={{
-                root: classes.textInputRoot,
-              }}
-            />
-            {/* fix styling on this and disable correctly */}
-            <SendIt
-              disabled={!textValue?.length}
-              onClick={textValue?.length ? handleClick : () => {}}
-            >
-              🚀
-            </SendIt>
-          </InputContainer>
+          <>
+            {timeRemaining && (
+              <PostTimerContainer>
+                <Remaining remaining={timeRemaining} />
+              </PostTimerContainer>
+            )}
+            <InputContainer>
+              <TextField
+                id="outlined-multiline-static"
+                multiline
+                variant="outlined"
+                style={{ width: "100%" }}
+                size="small"
+                value={textValue}
+                onChange={(e) => setTextValue(e.target.value)}
+                classes={{
+                  root: classes.textInputRoot,
+                }}
+              />
+              {/* fix styling on this and disable correctly */}
+              <SendIt
+                disabled={disabled}
+                onClick={disabled ? () => {} : handleClick}
+              >
+                🚀
+              </SendIt>
+            </InputContainer>
+          </>
         ) : (
           <LoginContainer>
             <Button variant="contained" onClick={loginWithRedirect}>

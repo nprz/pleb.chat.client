@@ -108,9 +108,34 @@ const SendIt = styled.div`
   opacity: ${({ disabled }) => (disabled ? "30%" : "100%")};
 `;
 
+const PostTimerContainer = styled.div`
+  height: 5px;
+  width: 100%;
+  border: 1px solid red;
+`;
+
+const Remaining = styled.div`
+  height: 5px;
+  background-color: red;
+  animation-name: remaining;
+  animation-duration: ${({ remaining }) => remaining * 10}s;
+
+  @keyframes remaining {
+    from {
+      width: ${({ remaining }) => remaining * 10}%;
+    }
+
+    to {
+      width: 0%;
+    }
+  }
+`;
+
 export default function ChatRoom() {
   const classes = useStyles();
   const [textValue, setTextValue] = useState();
+  const [timeRemaining, setTimeRemaining] = useState();
+  const [canPost, setCanPost] = useState();
   const messageEndRef = useRef(null);
   const { chatRoomId } = useParams();
   const {
@@ -119,10 +144,12 @@ export default function ChatRoom() {
     loginWithRedirect,
     loading: authLoading,
   } = useAuth0();
+
   const userId = useMemo(() => {
     const { sub = "|" } = user || {};
     return sub.split("|")[1];
   }, [user]);
+
   const {
     loading: roomLoading,
     data: { chatRoom: { messages = [], title = "" } = {} } = {},
@@ -133,21 +160,45 @@ export default function ChatRoom() {
     },
     fetchPolicy: "network-only",
   });
-  const { loading: userLoading, data: { user: pgUser } = {} } = useQuery(
-    GET_USER_LAST_MESSAGE,
-    {
-      variables: {
-        userId,
-      },
-      skip: !userId,
-    }
-  );
-  const [post] = useMutation(POST);
+
+  const {
+    loading: userLoading,
+    data: { user: { messages: lastMessage = [] } = {} } = {},
+  } = useQuery(GET_USER_LAST_MESSAGE, {
+    variables: {
+      userId,
+    },
+    skip: !userId,
+  });
+
+  const [post] = useMutation(POST, {
+    onComplete() {
+      setTimeRemaining(10);
+    },
+  });
+
   const loading = roomLoading || authLoading || userLoading;
 
   useEffect(() => {
     messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const current = moment();
+    const last = moment(new Date(parseInt(lastMessage[0]?.createdAt)));
+    const difference = current.diff(last, "seconds");
+    const timeLeft = 10 - difference;
+
+    if (difference && timeLeft > 0) {
+      setTimeRemaining(difference);
+    }
+  }, [lastMessage]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCanPost(true);
+    }, timeRemaining);
+  }, [timeRemaining]);
 
   function handleClick() {
     post({
@@ -219,6 +270,9 @@ export default function ChatRoom() {
             <div ref={messageEndRef} />
           </ChatContainer>
         )}
+        <PostTimerContainer>
+          <Remaining remaining={timeRemaining} />
+        </PostTimerContainer>
         {loading ? (
           <InputContainer />
         ) : isAuthenticated ? (

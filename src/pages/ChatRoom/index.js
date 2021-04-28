@@ -111,14 +111,15 @@ const SendIt = styled.div`
 const PostTimerContainer = styled.div`
   height: 5px;
   width: 100%;
-  border: 1px solid red;
 `;
 
 const Remaining = styled.div`
   height: 5px;
   background-color: red;
   animation-name: remaining;
-  animation-duration: ${({ remaining }) => remaining * 10}s;
+  animation-duration: ${({ remaining }) => remaining}s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
 
   @keyframes remaining {
     from {
@@ -172,7 +173,7 @@ export default function ChatRoom() {
   });
 
   const [post] = useMutation(POST, {
-    onComplete() {
+    onCompleted() {
       setTimeRemaining(10);
     },
   });
@@ -212,6 +213,7 @@ export default function ChatRoom() {
     setTextValue("");
   }
 
+  console.log(timeRemaining);
   function checkForSubscribe() {
     if (subscribeToMore) {
       subscribeToMore({
@@ -270,9 +272,11 @@ export default function ChatRoom() {
             <div ref={messageEndRef} />
           </ChatContainer>
         )}
-        <PostTimerContainer>
-          <Remaining remaining={timeRemaining} />
-        </PostTimerContainer>
+        {timeRemaining && (
+          <PostTimerContainer>
+            <Remaining remaining={timeRemaining} />
+          </PostTimerContainer>
+        )}
         {loading ? (
           <InputContainer />
         ) : isAuthenticated ? (
@@ -292,7 +296,7 @@ export default function ChatRoom() {
             {/* fix styling on this and disable correctly */}
             <SendIt
               disabled={!textValue?.length}
-              onClick={textValue?.length && handleClick}
+              onClick={textValue?.length ? handleClick : () => {}}
             >
               🚀
             </SendIt>

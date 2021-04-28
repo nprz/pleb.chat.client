@@ -174,8 +174,9 @@ export default function ChatRoom() {
 
   const [post] = useMutation(POST, {
     onCompleted() {
-      setTimeRemaining(10);
       setCanPost(false);
+      setTimeRemaining(10);
+      console.log("i ran on complete");
     },
   });
 
@@ -187,7 +188,6 @@ export default function ChatRoom() {
 
   useEffect(() => {
     if (!lastMessage[0]?.createdAt) return;
-    console.log(lastMessage[0]?.createdAt);
 
     const current = moment();
     const last = moment(new Date(parseInt(lastMessage[0]?.createdAt)));
@@ -203,9 +203,11 @@ export default function ChatRoom() {
   }, [lastMessage]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setCanPost(true);
-    }, timeRemaining);
+    if (timeRemaining) {
+      setTimeout(() => {
+        setCanPost(true);
+      }, timeRemaining * 1000);
+    }
   }, [timeRemaining]);
 
   function handleClick() {
@@ -220,7 +222,6 @@ export default function ChatRoom() {
     setTextValue("");
   }
 
-  console.log(canPost);
   function checkForSubscribe() {
     if (subscribeToMore) {
       subscribeToMore({

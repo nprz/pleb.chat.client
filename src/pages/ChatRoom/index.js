@@ -143,6 +143,7 @@ export default function ChatRoom() {
   const [textValue, setTextValue] = useState();
   const [timeRemaining, setTimeRemaining] = useState();
   const [canPost, setCanPost] = useState();
+  const [hasPosted, setHasPosted] = useState(false);
   const messageEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const { chatRoomId } = useParams();
@@ -187,7 +188,7 @@ export default function ChatRoom() {
     skip: !userId,
   });
 
-  const [post] = useMutation(POST, {
+  const [post, { loading: postLoading }] = useMutation(POST, {
     onCompleted() {},
   });
 
@@ -196,9 +197,11 @@ export default function ChatRoom() {
   // need to prevent this from running on load
   // also need to make the outline of the text input as orange
   useEffect(() => {
-    setCanPost(false);
-    setTimeRemaining(10);
-    messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+    if (hasPosted) {
+      setCanPost(false);
+      setTimeRemaining(10);
+      messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -238,6 +241,10 @@ export default function ChatRoom() {
       },
     });
 
+    if (!hasPosted) {
+      setHasPosted(true);
+    }
+
     setTextValue("");
   }
 
@@ -269,7 +276,7 @@ export default function ChatRoom() {
 
   checkForSubscribe();
 
-  const disabled = !textValue?.length || !canPost;
+  const disabled = !textValue?.length || !canPost || postLoading;
 
   return (
     <>

@@ -22,10 +22,14 @@ const useStyles = makeStyles((theme) => ({
   iconButton: {
     margin: "0px 16px 0px 8px",
   },
+  // temp solution to max height
+  // of input for now
   textInputRoot: {
     margin: " 12px",
     backgroundColor: "#fff",
     borderRadius: "4px",
+    maxHeight: "59px",
+    overflow: "scroll",
   },
 }));
 
@@ -43,7 +47,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  height: 60px;
+  min-height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,13 +113,15 @@ const SendIt = styled.div`
 `;
 
 const PostTimerContainer = styled.div`
-  height: 5px;
+  height: 20px;
   width: 100%;
+  position: fixed;
+  bottom: 65px;
 `;
 
 const Remaining = styled.div`
   height: 5px;
-  background-color: red;
+  background-color: #f48024;
   animation-name: remaining;
   animation-duration: ${({ remaining }) => remaining}s;
   animation-timing-function: linear;
@@ -138,6 +144,7 @@ export default function ChatRoom() {
   const [timeRemaining, setTimeRemaining] = useState();
   const [canPost, setCanPost] = useState();
   const messageEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
   const { chatRoomId } = useParams();
   const {
     user,
@@ -159,6 +166,14 @@ export default function ChatRoom() {
     variables: {
       chatRoomId,
     },
+    onCompleted() {
+      // stupid delay necessary or it only scrolls part way or not at all
+      // would need to listen to some event and only run this after
+      setTimeout(
+        () => messageEndRef?.current?.scrollIntoView({ behavior: "smooth" }),
+        100
+      );
+    },
     fetchPolicy: "network-only",
   });
 
@@ -176,7 +191,6 @@ export default function ChatRoom() {
     onCompleted() {
       setCanPost(false);
       setTimeRemaining(10);
-      console.log("i ran on complete");
     },
   });
 
@@ -206,6 +220,10 @@ export default function ChatRoom() {
     if (timeRemaining) {
       setTimeout(() => {
         setCanPost(true);
+        // this normally would be bad but
+        // since we are not running this if timeRemaining is 0 (falsy)
+        // we don't cause an infinite loop
+        setTimeRemaining(0);
       }, timeRemaining * 1000);
     }
   }, [timeRemaining]);
@@ -264,7 +282,7 @@ export default function ChatRoom() {
         {loading ? (
           <LoadingContainer />
         ) : (
-          <ChatContainer>
+          <ChatContainer ref={chatContainerRef}>
             {messages.map((message) => (
               <Chat key={message.id}>
                 <div>
@@ -286,7 +304,7 @@ export default function ChatRoom() {
           <InputContainer />
         ) : isAuthenticated ? (
           <>
-            {timeRemaining && (
+            {Boolean(timeRemaining) && (
               <PostTimerContainer>
                 <Remaining remaining={timeRemaining} />
               </PostTimerContainer>

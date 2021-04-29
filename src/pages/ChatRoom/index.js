@@ -188,15 +188,16 @@ export default function ChatRoom() {
   });
 
   const [post] = useMutation(POST, {
-    onCompleted() {
-      setCanPost(false);
-      setTimeRemaining(10);
-    },
+    onCompleted() {},
   });
 
   const loading = roomLoading || authLoading || userLoading;
 
+  // need to prevent this from running on load
+  // also need to make the outline of the text input as orange
   useEffect(() => {
+    setCanPost(false);
+    setTimeRemaining(10);
     messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 

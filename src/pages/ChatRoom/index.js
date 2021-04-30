@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import Loader from "../../components/Loader";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../../utils/auth";
 import { useQuery, useMutation } from "@apollo/client";
@@ -30,8 +30,27 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
     maxHeight: "59px",
     overflow: "scroll",
+
+    "&.Mui-focused fieldset": {
+      borderColor: "pink",
+    },
   },
 }));
+
+const StyledTextField = withStyles({
+  root: {
+    margin: " 12px",
+    backgroundColor: "#fff",
+    borderRadius: "4px",
+    maxHeight: "59px",
+    overflow: "scroll",
+    "& .MuiOutlinedInput-root": {
+      "&.Mui-focused fieldset": {
+        borderColor: "#f48024",
+      },
+    },
+  },
+})(TextField);
 
 const Container = styled.div`
   height: 100%;
@@ -318,7 +337,7 @@ export default function ChatRoom() {
               </PostTimerContainer>
             )}
             <InputContainer>
-              <TextField
+              <StyledTextField
                 id="outlined-multiline-static"
                 multiline
                 variant="outlined"
@@ -326,11 +345,7 @@ export default function ChatRoom() {
                 size="small"
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
-                classes={{
-                  root: classes.textInputRoot,
-                }}
               />
-              {/* fix styling on this and disable correctly */}
               <SendIt
                 disabled={disabled}
                 onClick={disabled ? () => {} : handleClick}

@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import Loader from "../../components/Loader";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../../utils/auth";
 import { useQuery, useMutation } from "@apollo/client";
@@ -18,27 +18,10 @@ const GET_USER_LAST_MESSAGE = loader("../../queries/getUserLastMessage.gql");
 const NEW_MESSAGE = loader("../../subscriptions/newMessage.gql");
 const POST = loader("../../mutations/post.gql");
 
-const useStyles = makeStyles((theme) => ({
-  iconButton: {
-    margin: "0px 16px 0px 8px",
-  },
-  // temp solution to max height
-  // of input for now
-  textInputRoot: {
-    margin: " 12px",
-    backgroundColor: "#fff",
-    borderRadius: "4px",
-    maxHeight: "59px",
-    overflow: "scroll",
-
-    "&.Mui-focused fieldset": {
-      borderColor: "pink",
-    },
-  },
-}));
-
 const StyledTextField = withStyles({
   root: {
+    // temp solution to max height
+    // of input for now
     margin: " 12px",
     backgroundColor: "#fff",
     borderRadius: "4px",
@@ -158,7 +141,6 @@ const Remaining = styled.div`
 `;
 
 export default function ChatRoom() {
-  const classes = useStyles();
   const [textValue, setTextValue] = useState();
   const [timeRemaining, setTimeRemaining] = useState();
   const [canPost, setCanPost] = useState();
@@ -221,7 +203,7 @@ export default function ChatRoom() {
       setTimeRemaining(10);
       messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, hasPosted]);
 
   useEffect(() => {
     if (!lastMessage[0]?.createdAt) return;

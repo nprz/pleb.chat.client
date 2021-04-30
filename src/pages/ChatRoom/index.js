@@ -203,7 +203,7 @@ export default function ChatRoom() {
       setTimeRemaining(10);
       messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, hasPosted]);
+  }, [messages]);
 
   useEffect(() => {
     if (!lastMessage[0]?.createdAt) return;
@@ -249,6 +249,32 @@ export default function ChatRoom() {
     setTextValue("");
   }
 
+  const disabled =
+    !textValue?.length ||
+    Boolean(!textValue.trim()) ||
+    textValue?.length > 350 ||
+    !canPost ||
+    postLoading;
+
+  useEffect(() => {
+    function keyDownHandler({ key }) {
+      if (key === "Enter") {
+        console.log("enter");
+        console.log(disabled);
+        // handleClick();
+        if (!disabled) {
+          handleClick();
+        }
+      }
+    }
+
+    window.addEventListener("keydown", keyDownHandler);
+
+    return () => {
+      window.addEventListener("keydown", keyDownHandler);
+    };
+  }, []);
+
   function checkForSubscribe() {
     if (subscribeToMore) {
       subscribeToMore({
@@ -276,8 +302,6 @@ export default function ChatRoom() {
   }
 
   checkForSubscribe();
-
-  const disabled = !textValue?.length || !canPost || postLoading;
 
   return (
     <>

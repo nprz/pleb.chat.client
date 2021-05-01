@@ -251,11 +251,12 @@ export default function ChatRoom() {
 
   const disabled =
     !textValue?.length ||
-    Boolean(!textValue.trim()) ||
+    !textValue.trim() ||
     textValue?.length > 350 ||
     !canPost ||
     postLoading;
 
+  // comment
   useEffect(() => {
     function keyDownHandler({ key }) {
       if (key === "Enter") {

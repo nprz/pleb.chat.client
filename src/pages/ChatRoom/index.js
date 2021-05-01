@@ -10,6 +10,7 @@ import Loader from "../../components/Loader";
 import { withStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../../utils/auth";
+import useKeyDown from "../../utils/useKeyDown";
 import { useQuery, useMutation } from "@apollo/client";
 import { loader } from "graphql.macro";
 
@@ -147,6 +148,7 @@ export default function ChatRoom() {
   const [hasPosted, setHasPosted] = useState(false);
   const messageEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const enterKeyDown = useKeyDown("Enter");
   const { chatRoomId } = useParams();
   const {
     user,
@@ -206,7 +208,11 @@ export default function ChatRoom() {
   }, [messages]);
 
   useEffect(() => {
-    if (!lastMessage[0]?.createdAt) return;
+    if (!lastMessage[0]?.createdAt) {
+      // virgin poster
+      setCanPost(true);
+      return;
+    }
 
     const current = moment();
     const last = moment(new Date(parseInt(lastMessage[0]?.createdAt)));
@@ -256,25 +262,11 @@ export default function ChatRoom() {
     !canPost ||
     postLoading;
 
-  // comment
   useEffect(() => {
-    function keyDownHandler({ key }) {
-      if (key === "Enter") {
-        console.log("enter");
-        console.log(disabled);
-        // handleClick();
-        if (!disabled) {
-          handleClick();
-        }
-      }
+    if (enterKeyDown && !disabled) {
+      handleClick();
     }
-
-    window.addEventListener("keydown", keyDownHandler);
-
-    return () => {
-      window.addEventListener("keydown", keyDownHandler);
-    };
-  }, []);
+  }, [enterKeyDown, disabled, handleClick]);
 
   function checkForSubscribe() {
     if (subscribeToMore) {

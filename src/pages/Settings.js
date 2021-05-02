@@ -68,10 +68,21 @@ const HeaderText = styled.div`
 
 const InfoListItem = styled.div`
   display: flex;
-  align-items: center;
-  height: 30px;
-  padding: 1.5rem 0rem;
+  flex-direction: column;
   width: 100%;
+  padding: 1.5rem 0rem;
+`;
+
+const Text = styled.div`
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const ListItemTitle = styled.div`
+  font-size: 0.75rem;
+  opacity: 50%;
 `;
 
 const ButtonContainer = styled.div`
@@ -80,17 +91,6 @@ const ButtonContainer = styled.div`
   height: 30px;
   width: 100%;
   padding: 1.5rem 0rem;
-`;
-
-const IconContainer = styled.div`
-  margin-right: 0.5rem;
-`;
-
-const Text = styled.div`
-  font-weight: bold;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 export default function Settings() {
@@ -113,7 +113,7 @@ export default function Settings() {
         }}
       >
         <InfoListItem>
-          <IconContainer>👤</IconContainer>
+          <ListItemTitle>Email</ListItemTitle>
           <Text> {user?.email}</Text>
         </InfoListItem>
         <ButtonContainer>

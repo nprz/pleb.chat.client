@@ -1,16 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { useAuth0 } from "../utils/auth";
-import { useHistory } from "react-router-dom";
-import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   cardRoot: {
     borderRadius: 20,
-    marginTop: "5rem",
-    width: "calc(100% - 4rem)",
+    margin: "5rem 2rem 0rem 2rem",
     padding: "0rem 1rem",
     display: "flex",
     justifyContent: "center",
@@ -49,6 +46,12 @@ const Header = styled.div`
   padding: 0rem 1.25rem;
 `;
 
+const HeaderText = styled.div`
+  width: 33%;
+  display: flex;
+  justify-content: center;
+`;
+
 const BackArrow = styled.div`
   font-size: 2rem;
 `;
@@ -60,41 +63,7 @@ const Spacer = styled.div`
   align-items: center;
 `;
 
-const HeaderText = styled.div`
-  width: 33%;
-  display: flex;
-  justify-content: center;
-`;
-
-const InfoListItem = styled.div`
-  display: flex;
-  align-items: center;
-  height: 30px;
-  padding: 1.5rem 0rem;
-  width: 100%;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 30px;
-  width: 100%;
-  padding: 1.5rem 0rem;
-`;
-
-const IconContainer = styled.div`
-  margin-right: 0.5rem;
-`;
-
-const Text = styled.div`
-  font-weight: bold;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-export default function Settings() {
-  const { user, logout } = useAuth0();
+export default function About() {
   const history = useHistory();
   const classes = useStyles();
 
@@ -104,7 +73,7 @@ export default function Settings() {
         <Spacer>
           <BackArrow onClick={() => history.goBack()}>⬅️</BackArrow>
         </Spacer>
-        <HeaderText>Settings</HeaderText>
+        <HeaderText>About</HeaderText>
         <Spacer />
       </Header>
       <Card
@@ -112,15 +81,7 @@ export default function Settings() {
           root: classes.cardRoot,
         }}
       >
-        <InfoListItem>
-          <IconContainer>👤</IconContainer>
-          <Text> {user?.email}</Text>
-        </InfoListItem>
-        <ButtonContainer>
-          <Button variant="contained" onClick={logout}>
-            Logout 👋
-          </Button>
-        </ButtonContainer>
+        something inside the card which should definitely be bigger
       </Card>
     </Container>
   );

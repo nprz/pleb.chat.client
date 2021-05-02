@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import ChatRoom from "./pages/ChatRoom";
 import Settings from "./pages/Settings";
 import NoMatch from "./pages/NoMatch";
+import About from "./pages/About";
 
 function App() {
   const { isAuthenticated } = useAuth0();
@@ -20,6 +21,9 @@ function App() {
         </Route>
         <Route path="/room/:chatRoomId">
           <ChatRoom />
+        </Route>
+        <Route path="/about">
+          <About />
         </Route>
         {isAuthenticated && (
           <Route path="/settings">

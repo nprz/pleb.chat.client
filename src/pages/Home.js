@@ -149,6 +149,24 @@ const Header = styled.div`
   background-color: #f2efe4;
 `;
 
+const Footer = styled.div`
+  height: 60px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0rem 1.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2efe4;
+`;
+
+const FooterText = styled.div`
+  color: #5476aa;
+  font-size: 0.75rem;
+`;
+
 const IconContainer = styled.div`
   font-size: 2rem;
 `;
@@ -156,6 +174,10 @@ const IconContainer = styled.div`
 const StyledLink = styled(Link)`
   text-decoration: none;
   margin-top: 0.5rem;
+`;
+
+const StyledAboutLink = styled(Link)`
+  text-decoration: none;
 `;
 
 export default function Home() {
@@ -273,7 +295,7 @@ export default function Home() {
     - 404 page ✅
     - About page
     - center and max width for desktop
-    - limit posting to 15sec per post
+    - limit posting to 15sec per post✅
     - Make sure DB url is pointing in the correct spot
     - dumb bug when loading directly into a chatroom
     - chron job to delete inactive rooms - will be doing this manually for the time being
@@ -368,6 +390,12 @@ export default function Home() {
             Create Room
           </Button>
         </ContentContainer>
+        <Footer>
+          <StyledAboutLink to="/about">
+            <FooterText>About</FooterText>
+          </StyledAboutLink>
+        </Footer>
+
         <PlebChatModal
           open={viewModal}
           handleClose={handleClearViewModal}

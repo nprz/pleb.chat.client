@@ -149,6 +149,7 @@ export default function ChatRoom() {
   const messageEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const enterKeyDown = useKeyDown("Enter");
+  const shiftKeyDown = useKeyDown("Shift");
   const { chatRoomId } = useParams();
   const {
     user,
@@ -263,10 +264,10 @@ export default function ChatRoom() {
     postLoading;
 
   useEffect(() => {
-    if (enterKeyDown && !disabled) {
+    if (enterKeyDown && !shiftKeyDown && !disabled) {
       handleClick();
     }
-  }, [enterKeyDown, disabled, handleClick]);
+  }, [enterKeyDown, shiftKeyDown, disabled, handleClick]);
 
   function checkForSubscribe() {
     if (subscribeToMore) {
@@ -344,6 +345,11 @@ export default function ChatRoom() {
                 size="small"
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13 && !e.shiftKey) {
+                    e.preventDefault();
+                  }
+                }}
               />
               <SendIt
                 disabled={disabled}

@@ -4,11 +4,12 @@ import { useAuth0 } from "../utils/auth";
 import { useHistory } from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
+import Loader from "../components/Loader";
 import { makeStyles } from "@material-ui/core/styles";
 
 // Query
 import { loader } from "graphql.macro";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 const GET_USER = loader("../queries/getUserLastMessage.gql");
 
 const useStyles = makeStyles({
@@ -106,13 +107,19 @@ export default function Settings({ user }) {
     const { sub = "|" } = user || {};
     return sub.split("|")[1];
   }, [user]);
-  const { loading: userLoading, user: { name } = {} } = useQuery(GET_USER, {
-    variables: {
-      userId,
-    },
-  });
+  const { loading: userLoading, data: { user: { name } = {} } = {} } = useQuery(
+    GET_USER,
+    {
+      variables: {
+        userId,
+      },
+    }
+  );
 
-  console.log(name);
+  if (userLoading) {
+    return <Loader />;
+  }
+
   return (
     <Container>
       <Header>
@@ -133,7 +140,7 @@ export default function Settings({ user }) {
         </InfoListItem>
         <InfoListItem>
           <ListItemTitle>User Name</ListItemTitle>
-          <Text> {name}</Text>
+          <Text>{name}</Text>
         </InfoListItem>
         <InfoListItem>
           <ListItemTitle>Email Verified</ListItemTitle>

@@ -6,7 +6,6 @@ import Settings from "./Settings";
 
 export default function SettingsRoute() {
   const { user, loading, isAuthenticated } = useAuth0();
-  console.log({ isAuthenticated, loading });
 
   if (loading || typeof isAuthenticated === "undefined") {
     return <Loader />;

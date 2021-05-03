@@ -81,7 +81,7 @@ export default function About() {
           root: classes.cardRoot,
         }}
       >
-        something inside the card which should definitely be bigger
+        Thanks for using Pleb Chat 🙂
       </Card>
     </Container>
   );

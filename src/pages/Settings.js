@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useAuth0 } from "../utils/auth";
 import { useHistory } from "react-router-dom";
@@ -6,12 +6,17 @@ import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
+// Query
+import { loader } from "graphql.macro";
+import { useQuery, useMutation } from "@apollo/client";
+const GET_USER = loader("../queries/getUserLastMessage.gql");
+
 const useStyles = makeStyles({
   cardRoot: {
     borderRadius: 20,
     marginTop: "5rem",
     width: "calc(100% - 4rem)",
-    padding: "0rem 1rem",
+    padding: "1rem",
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
@@ -70,7 +75,7 @@ const InfoListItem = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 1.5rem 0rem;
+  padding-bottom: 1rem;
 `;
 
 const Text = styled.div`
@@ -93,11 +98,21 @@ const ButtonContainer = styled.div`
   padding: 1.5rem 0rem;
 `;
 
-export default function Settings() {
-  const { user, logout } = useAuth0();
+export default function Settings({ user }) {
+  const { logout } = useAuth0();
   const history = useHistory();
   const classes = useStyles();
+  const userId = useMemo(() => {
+    const { sub = "|" } = user || {};
+    return sub.split("|")[1];
+  }, [user]);
+  const { loading: userLoading, user: { name } = {} } = useQuery(GET_USER, {
+    variables: {
+      userId,
+    },
+  });
 
+  console.log(name);
   return (
     <Container>
       <Header>
@@ -116,6 +131,15 @@ export default function Settings() {
           <ListItemTitle>Email</ListItemTitle>
           <Text> {user?.email}</Text>
         </InfoListItem>
+        <InfoListItem>
+          <ListItemTitle>User Name</ListItemTitle>
+          <Text> {name}</Text>
+        </InfoListItem>
+        <InfoListItem>
+          <ListItemTitle>Email Verified</ListItemTitle>
+          <Text> {user?.email_verified ? "✅" : "❌"}</Text>
+        </InfoListItem>
+
         <ButtonContainer>
           <Button variant="contained" onClick={logout}>
             Logout 👋

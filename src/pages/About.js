@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import IconButton from "@material-ui/core/IconButton";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import TextField from "@material-ui/core/TextField";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -23,10 +25,11 @@ const useStyles = makeStyles({
 const StyledTextField = withStyles({
   root: {
     flex: 1,
-  },
-  input: {
-    padding: "0.35rem",
-    backgroundColor: "red",
+    "& .MuiOutlinedInput-root": {
+      "& input": {
+        padding: "0.35rem",
+      },
+    },
   },
 })(TextField);
 
@@ -97,21 +100,22 @@ const ListItemTitle = styled.div`
 
 const InputContainer = styled.div`
   display: flex;
-  height: 30px;
+  margin-top: 8px;
 `;
 
-const CopyContainer = styled.div`
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  border-right: 1px solid black;
-  padding: 0rem 0.5rem;
-  display: flex;
-  align-items: center;
+const CopyButton = styled.div`
+  font-size: 24px;
+  margin-left: 0.25rem;
+`;
+
+const BottomText = styled.div`
+  margin-top: 1rem;
 `;
 
 export default function About() {
   const history = useHistory();
   const classes = useStyles();
+  const [copy, setCopy] = useState(false);
 
   return (
     <Container>
@@ -138,12 +142,30 @@ export default function About() {
               value="1BHxcGzNiP3EM9n6iemJWc6BYyyvPMLaSx"
               label="BTC"
               variant="outlined"
+              spellcheck="false"
             />
-            <IconButton size="small">📄</IconButton>
+            <CopyToClipboard
+              text="1BHxcGzNiP3EM9n6iemJWc6BYyyvPMLaSx"
+              onCopy={() => setCopy(true)}
+            >
+              <CopyButton>📄</CopyButton>
+            </CopyToClipboard>
           </InputContainer>
         </InfoListItem>
-        Thanks for using Pleb Chat 🙂
+        <BottomText>Thanks for using Pleb Chat 🙂</BottomText>
       </Card>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        open={copy}
+        autoHideDuration={3000}
+      >
+        <MuiAlert onClose={() => setCopy(false)} severity="success">
+          Address Copied
+        </MuiAlert>
+      </Snackbar>
     </Container>
   );
 }

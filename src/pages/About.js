@@ -1,20 +1,34 @@
 import React from "react";
 import styled from "styled-components";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   cardRoot: {
     borderRadius: 20,
-    margin: "5rem 2rem 0rem 2rem",
-    padding: "0rem 1rem",
+    marginTop: "5rem",
+    width: "calc(100% - 4rem)",
+    padding: "1rem",
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
+    alignItems: "center",
     boxShadow: "0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)",
   },
 });
+
+const StyledTextField = withStyles({
+  root: {
+    flex: 1,
+  },
+  input: {
+    padding: "0.35rem",
+    backgroundColor: "red",
+  },
+})(TextField);
 
 const Container = styled.div`
   height: 100%;
@@ -63,6 +77,38 @@ const Spacer = styled.div`
   align-items: center;
 `;
 
+const InfoListItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-bottom: 1rem;
+`;
+
+const Text = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const ListItemTitle = styled.div`
+  font-size: 0.75rem;
+  opacity: 50%;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  height: 30px;
+`;
+
+const CopyContainer = styled.div`
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  padding: 0rem 0.5rem;
+  display: flex;
+  align-items: center;
+`;
+
 export default function About() {
   const history = useHistory();
   const classes = useStyles();
@@ -81,6 +127,21 @@ export default function About() {
           root: classes.cardRoot,
         }}
       >
+        <InfoListItem>
+          <ListItemTitle>Twitter</ListItemTitle>
+          <Text>@joinPlebChat</Text>
+        </InfoListItem>
+        <InfoListItem>
+          <ListItemTitle>Donate</ListItemTitle>
+          <InputContainer>
+            <StyledTextField
+              value="1BHxcGzNiP3EM9n6iemJWc6BYyyvPMLaSx"
+              label="BTC"
+              variant="outlined"
+            />
+            <IconButton size="small">📄</IconButton>
+          </InputContainer>
+        </InfoListItem>
         Thanks for using Pleb Chat 🙂
       </Card>
     </Container>

@@ -80,7 +80,6 @@ const InfoListItem = styled.div`
 `;
 
 const Text = styled.div`
-  font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

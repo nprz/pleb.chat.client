@@ -47,7 +47,7 @@ export default function AuthWrapper({ children }) {
     },
     heroku: {
       ws: `wss://pleb-chat.herokuapp.com/subscriptions`,
-      http: `http://pleb-chat.herokuapp.com/`,
+      http: `https://pleb-chat.herokuapp.com/`,
     },
   };
 

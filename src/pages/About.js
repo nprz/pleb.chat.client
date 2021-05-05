@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useHistory } from "react-router-dom";
+import ReactGA from "react-ga";
 
 const useStyles = makeStyles({
   cardRoot: {
@@ -117,6 +118,14 @@ export default function About() {
   const classes = useStyles();
   const [copy, setCopy] = useState(false);
 
+  function handleCopy() {
+    setCopy(true);
+    ReactGA.event({
+      category: "Click",
+      action: "address copied",
+    });
+  }
+
   return (
     <Container>
       <Header>
@@ -146,7 +155,7 @@ export default function About() {
             />
             <CopyToClipboard
               text="1BHxcGzNiP3EM9n6iemJWc6BYyyvPMLaSx"
-              onCopy={() => setCopy(true)}
+              onCopy={handleCopy}
             >
               <CopyButton>📄</CopyButton>
             </CopyToClipboard>

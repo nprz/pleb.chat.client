@@ -10,6 +10,7 @@ import PlebChatModal from "../components/Modal";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
+import ReactGA from "react-ga";
 import { useAuth0 } from "../utils/auth";
 import { useHistory } from "react-router-dom";
 import { loader } from "graphql.macro";
@@ -193,7 +194,9 @@ export default function Home() {
     isAuthenticated,
     loading: authLoading,
     loginWithRedirect,
+    user,
   } = useAuth0();
+  setUser;
   const [
     createChatRoom,
     { data, loading: createChatRoomLoading },
@@ -239,6 +242,12 @@ export default function Home() {
       },
     }
   );
+
+  useEffect(() => {
+    if (user) {
+      ReactGA.set({ userId: user.sub });
+    }
+  }, [user]);
 
   const loading = createChatRoomLoading || getChatRoomLoading;
 
@@ -293,9 +302,13 @@ export default function Home() {
     - Logic to make sure room actually exists and is ongoing ✅
     - Show username when logged in, logout / setting screen ✅
     - 404 page ✅
-    - About page
+    - About page ✅
     - center and max width for desktop
     - limit posting to 15sec per post✅
+    - cool gradient on posting limit
+    - Install GA
+    - center for desktop, max-width
+    - make a twitter
     - Make sure DB url is pointing in the correct spot
     - dumb bug when loading directly into a chatroom
     - chron job to delete inactive rooms - will be doing this manually for the time being

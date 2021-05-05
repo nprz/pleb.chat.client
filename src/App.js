@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import history from "./utils/history";
+import ReactGA from "react-ga";
 
 // Components
 import Home from "./pages/Home";
@@ -9,7 +10,18 @@ import SettingsRoute from "./pages/SettingsRoute";
 import NoMatch from "./pages/NoMatch";
 import About from "./pages/About";
 
+const trackingId = "G-5YMC49B6QM";
+
+history.listen((location) => {
+  ReactGA.set({ page: location.pathname });
+  ReactGA.pageview(location.pathname);
+});
+
 function App() {
+  useEffect(() => {
+    ReactGA.initialize(trackingId);
+  }, []);
+
   return (
     <Router history={history}>
       <Switch>

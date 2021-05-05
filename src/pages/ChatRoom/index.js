@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 
@@ -198,14 +204,15 @@ export default function ChatRoom() {
 
   const loading = roomLoading || authLoading || userLoading;
 
-  // need to prevent this from running on load
-  // also need to make the outline of the text input as orange
+  // usePosted should be in dependency array,
+  // but doing so would defeat the purpose of it
   useEffect(() => {
     if (hasPosted) {
       setCanPost(false);
       setTimeRemaining(10);
       messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
     }
+    // eslint-disable-next-line
   }, [messages]);
 
   useEffect(() => {
@@ -240,7 +247,7 @@ export default function ChatRoom() {
     }
   }, [timeRemaining]);
 
-  function handleClick() {
+  const handleClick = useCallback(() => {
     post({
       variables: {
         chatRoomId,
@@ -254,7 +261,7 @@ export default function ChatRoom() {
     }
 
     setTextValue("");
-  }
+  }, [post, hasPosted, setTextValue, chatRoomId, userId, textValue]);
 
   const disabled =
     !textValue?.length ||

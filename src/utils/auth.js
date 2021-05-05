@@ -45,6 +45,7 @@ export const Auth0Provider = ({
     };
 
     initAuth0();
+    // eslint-disable-next-line
   }, []);
 
   const handleRedirectCallback = async () => {
@@ -63,6 +64,7 @@ export const Auth0Provider = ({
         user,
         loading,
         popupOpen,
+        setPopupOpen,
         handleRedirectCallback,
         getIdTokenClaims: (...p) => auth0Client.getIdTokenClaims(...p),
         loginWithRedirect: (...p) => auth0Client.loginWithRedirect(...p),

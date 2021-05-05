@@ -196,11 +196,9 @@ export default function Home() {
     loginWithRedirect,
     user,
   } = useAuth0();
-  setUser;
-  const [
-    createChatRoom,
-    { data, loading: createChatRoomLoading },
-  ] = useMutation(CREATE_CHATROOM);
+  const [createChatRoom, { loading: createChatRoomLoading }] = useMutation(
+    CREATE_CHATROOM
+  );
   const [getChatRoom, { loading: getChatRoomLoading }] = useLazyQuery(
     GET_CHATROOM,
     {
@@ -306,7 +304,7 @@ export default function Home() {
     - center and max width for desktop
     - limit posting to 15sec per post✅
     - cool gradient on posting limit
-    - Install GA
+    - Install GA ✅
     - center for desktop, max-width
     - make a twitter
     - Make sure DB url is pointing in the correct spot

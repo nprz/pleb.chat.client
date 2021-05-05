@@ -46,7 +46,7 @@ export default function AuthWrapper({ children }) {
       http: `http://localhost:4001/`,
     },
     heroku: {
-      ws: `ws://pleb-chat.herokuapp.com/subscriptions`,
+      ws: `wss://pleb-chat.herokuapp.com/subscriptions`,
       http: `http://pleb-chat.herokuapp.com/`,
     },
   };

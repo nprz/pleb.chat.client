@@ -311,6 +311,14 @@ export default function Home() {
     - dumb bug when loading directly into a chatroom
     - chron job to delete inactive rooms - will be doing this manually for the time being
     - Ship it >:)
+
+    - Make sure GA is working
+    - Make sure email forwarding is working
+    - Set up Auth0
+    - Set up a new db
+    - get off hobby heroku plan
+    - fix issue with link ?
+    - 404 page
   */
 
   /*

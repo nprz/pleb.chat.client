@@ -10,7 +10,7 @@ import SettingsRoute from "./pages/SettingsRoute";
 import NoMatch from "./pages/NoMatch";
 import About from "./pages/About";
 
-const trackingId = "G-5YMC49B6QM";
+const trackingId = "G-8R30L6MZB2";
 
 history.listen((location) => {
   ReactGA.set({ page: location.pathname });

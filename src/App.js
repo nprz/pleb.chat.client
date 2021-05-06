@@ -12,7 +12,7 @@ import About from "./pages/About";
 
 const trackingId = "UA-140853999-2";
 
-history.listen((location) => {
+history.listen(({ location }) => {
   ReactGA.set({ page: location.pathname });
   ReactGA.pageview(location.pathname);
 });

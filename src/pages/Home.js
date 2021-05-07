@@ -276,15 +276,12 @@ export default function Home() {
 
       const path = url.pathname.split("/");
       if (path.length !== 3 || path[1] !== "room" || !path[2]?.length) {
-        console.log("bad 2");
         setUrlError(true);
         return;
       }
 
       setUrlError(false);
     } catch (error) {
-      console.log("bad 3");
-
       setUrlError(true);
     }
   }

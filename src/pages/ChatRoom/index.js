@@ -207,7 +207,7 @@ export default function ChatRoom() {
   // usePosted should be in dependency array,
   // but doing so would defeat the purpose of it
   useEffect(() => {
-    if (hasPosted) {
+    if (hasPosted && messages[messages.length - 1]?.user?.id === userId) {
       setCanPost(false);
       setTimeRemaining(10);
       messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });

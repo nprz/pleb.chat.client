@@ -211,6 +211,8 @@ export default function ChatRoom() {
       setCanPost(false);
       setTimeRemaining(10);
       messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
     }
     // eslint-disable-next-line
   }, [messages]);

@@ -269,19 +269,22 @@ export default function Home() {
     try {
       const url = new URL(e.target.value);
 
-      if (url.hostname !== "joinclubhouse.com") {
+      if (url.hostname !== "www.joinclubhouse.com") {
         setUrlError(true);
         return;
       }
 
       const path = url.pathname.split("/");
       if (path.length !== 3 || path[1] !== "room" || !path[2]?.length) {
+        console.log("bad 2");
         setUrlError(true);
         return;
       }
 
       setUrlError(false);
     } catch (error) {
+      console.log("bad 3");
+
       setUrlError(true);
     }
   }
@@ -315,10 +318,10 @@ export default function Home() {
     - Make sure GA is working
     - Make sure email forwarding is working
     - Set up Auth0
-    - Set up a new db
-    - get off hobby heroku plan
+    - Set up a new db ✅
+    - get off hobby heroku plan ✅
     - fix issue with link ?
-    - 404 page
+    - 404 page ✅
   */
 
   /*

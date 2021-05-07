@@ -121,6 +121,22 @@ const SendIt = styled.div`
   opacity: ${({ disabled }) => (disabled ? "30%" : "100%")};
 `;
 
+const Spinner = styled.div`
+  font-size: 1.5rem;
+  margin-right: 12px;
+  animation: spin 1s infinite linear;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(359deg);
+    }
+  }
+`;
+
 const PostTimerContainer = styled.div`
   height: 20px;
   width: 100%;
@@ -360,12 +376,16 @@ export default function ChatRoom() {
                   }
                 }}
               />
-              <SendIt
-                disabled={disabled}
-                onClick={disabled ? () => {} : handleClick}
-              >
-                🚀
-              </SendIt>
+              {postLoading ? (
+                <Spinner>🌀</Spinner>
+              ) : (
+                <SendIt
+                  disabled={disabled}
+                  onClick={disabled ? () => {} : handleClick}
+                >
+                  🚀
+                </SendIt>
+              )}
             </InputContainer>
           </>
         ) : (

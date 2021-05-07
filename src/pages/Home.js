@@ -406,7 +406,7 @@ export default function Home() {
             variant="contained"
             disabled={!inputValue.length || urlError}
           >
-            Create Room
+            Join Room
           </Button>
         </ContentContainer>
         <Footer>

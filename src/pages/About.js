@@ -113,6 +113,10 @@ const BottomText = styled.div`
   margin-top: 1rem;
 `;
 
+const StyledAnchor = styled.a`
+  text-decoration: none;
+`;
+
 export default function About() {
   const history = useHistory();
   const classes = useStyles();
@@ -142,7 +146,15 @@ export default function About() {
       >
         <InfoListItem>
           <ListItemTitle>Twitter</ListItemTitle>
-          <Text>@joinPlebChat</Text>
+          <Text>
+            <StyledAnchor
+              href="https://twitter.com/PlebChat"
+              target="_blank"
+              rel="noopener"
+            >
+              @PlebChat
+            </StyledAnchor>
+          </Text>
         </InfoListItem>
         <InfoListItem>
           <ListItemTitle>Donate</ListItemTitle>

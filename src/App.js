@@ -20,6 +20,7 @@ history.listen((location) => {
 function App() {
   useEffect(() => {
     ReactGA.initialize(trackingId);
+    console.log("init");
   }, []);
 
   return (

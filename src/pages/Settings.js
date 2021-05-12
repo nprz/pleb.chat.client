@@ -57,6 +57,7 @@ const Header = styled.div`
 
 const BackArrow = styled.div`
   font-size: 2rem;
+  cursor: pointer;
 `;
 
 const Spacer = styled.div`

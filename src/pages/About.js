@@ -72,6 +72,7 @@ const HeaderText = styled.div`
 
 const BackArrow = styled.div`
   font-size: 2rem;
+  cursor: pointer;
 `;
 
 const Spacer = styled.div`
@@ -163,7 +164,7 @@ export default function About() {
               value="1BHxcGzNiP3EM9n6iemJWc6BYyyvPMLaSx"
               label="BTC"
               variant="outlined"
-              spellcheck="false"
+              spellCheck="false"
             />
             <CopyToClipboard
               text="1BHxcGzNiP3EM9n6iemJWc6BYyyvPMLaSx"

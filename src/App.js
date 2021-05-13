@@ -17,7 +17,7 @@ history.listen(({ location }) => {
   ReactGA.pageview(location.pathname);
 });
 
-// comment
+// comment 2
 function App() {
   useEffect(() => {
     ReactGA.initialize(trackingId);

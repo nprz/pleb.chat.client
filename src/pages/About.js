@@ -158,7 +158,15 @@ export default function About() {
           </Text>
         </InfoListItem>
         <InfoListItem>
-          <ListItemTitle>Donate</ListItemTitle>
+          <ListItemTitle>Email</ListItemTitle>
+          <Text>
+            <StyledAnchor href="mailto:hello@pleb.chat">
+              hello@pleb.chat
+            </StyledAnchor>
+          </Text>
+        </InfoListItem>
+        <InfoListItem>
+          <ListItemTitle>Keep the servers running</ListItemTitle>
           <InputContainer>
             <StyledTextField
               value="1BHxcGzNiP3EM9n6iemJWc6BYyyvPMLaSx"

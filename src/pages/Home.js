@@ -306,14 +306,14 @@ export default function Home() {
     - cool gradient on posting limit
     - Install GA ✅
     - center for desktop, max-width
-    - make a twitter
-    - Make sure DB url is pointing in the correct spot
-    - dumb bug when loading directly into a chatroom
+    - make a twitter ✅
+    - Make sure DB url is pointing in the correct spot ✅
+    - dumb bug when loading directly into a chatroom ✅
     - chron job to delete inactive rooms - will be doing this manually for the time being
     - Ship it >:)
 
-    - Make sure GA is working
-    - Make sure email forwarding is working
+    - Make sure GA is working ✅
+    - Make sure email forwarding is working ✅
     - Set up Auth0
     - Set up a new db ✅
     - get off hobby heroku plan ✅
@@ -370,12 +370,9 @@ export default function Home() {
           </TitleContainer>
           <Spacer />
           <Text>
-            Hey, you don't have enough followers to get on stage and you don't
-            know what you'd say in front of all those people anyway.
+            Text chat rooms for clubhouse. Enter the url of an ongoing clubhouse
+            room below to start chatting.
           </Text>
-
-          <Spacer />
-          <Text>Pleb Chat is here for you.</Text>
 
           <Spacer />
           <Text>Join the conversation. Join Pleb Chat.</Text>

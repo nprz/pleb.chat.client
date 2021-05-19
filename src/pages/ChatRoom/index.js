@@ -168,6 +168,7 @@ export default function ChatRoom() {
   const [timeRemaining, setTimeRemaining] = useState();
   const [canPost, setCanPost] = useState();
   const [hasPosted, setHasPosted] = useState(false);
+  const [posting, setPosting] = useState(false);
   const messageEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const enterKeyDown = useKeyDown("Enter");
@@ -201,6 +202,7 @@ export default function ChatRoom() {
         100
       );
     },
+    // does this need to be here?
     fetchPolicy: "network-only",
   });
 
@@ -225,6 +227,7 @@ export default function ChatRoom() {
   useEffect(() => {
     if (hasPosted && messages[messages.length - 1]?.user?.id === userId) {
       setCanPost(false);
+      setPosting(false);
       setTimeRemaining(10);
       messageEndRef?.current?.scrollIntoView({ behavior: "smooth" });
     } else {
@@ -266,6 +269,7 @@ export default function ChatRoom() {
   }, [timeRemaining]);
 
   const handleClick = useCallback(() => {
+    setPosting(true);
     post({
       variables: {
         chatRoomId,
@@ -286,13 +290,13 @@ export default function ChatRoom() {
     !textValue.trim() ||
     textValue?.length > 350 ||
     !canPost ||
-    postLoading;
+    posting;
 
   useEffect(() => {
     if (enterKeyDown && !shiftKeyDown && !disabled) {
       handleClick();
     }
-  }, [enterKeyDown, shiftKeyDown, disabled, handleClick]);
+  }, [enterKeyDown, shiftKeyDown, disabled, handleClick, postLoading]);
 
   function checkForSubscribe() {
     if (subscribeToMore) {
@@ -376,7 +380,7 @@ export default function ChatRoom() {
                   }
                 }}
               />
-              {postLoading ? (
+              {posting ? (
                 <Spinner>🌀</Spinner>
               ) : (
                 <SendIt

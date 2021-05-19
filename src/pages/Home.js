@@ -46,6 +46,7 @@ const Container = styled.div`
 `;
 
 const ContentContainer = styled.div`
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -139,10 +140,7 @@ const Spacer = styled.div`
 
 const Header = styled.div`
   height: 60px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  width: calc(100% - 2.5rem);
   padding: 0rem 1.25rem;
   display: flex;
   justify-content: flex-end;
@@ -152,10 +150,7 @@ const Header = styled.div`
 
 const Footer = styled.div`
   height: 60px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: calc(100% - 2.5rem);
   padding: 0rem 1.25rem;
   display: flex;
   justify-content: center;
@@ -319,6 +314,7 @@ export default function Home() {
     - get off hobby heroku plan ✅
     - fix issue with link ?
     - 404 page ✅
+    - Better color scheme ?
   */
 
   /*

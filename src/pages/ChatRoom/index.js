@@ -13,6 +13,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import Loader from "../../components/Loader";
+import PostTimer from "../../components/PostTimer";
 import { withStyles } from "@material-ui/core/styles";
 
 import { useAuth0 } from "../../utils/auth";
@@ -137,31 +138,12 @@ const Spinner = styled.div`
   }
 `;
 
-const PostTimerContainer = styled.div`
-  height: 20px;
-  width: 100%;
-  position: fixed;
-  bottom: 65px;
-`;
-
-const Remaining = styled.div`
-  height: 5px;
-  background-color: #f48024;
-  animation-name: remaining;
-  animation-duration: ${({ remaining }) => remaining}s;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-
-  @keyframes remaining {
-    from {
-      width: ${({ remaining }) => remaining * 10}%;
-    }
-
-    to {
-      width: 0%;
-    }
-  }
-`;
+// const PostTimerContainer = styled.div`
+//   height: 20px;
+//   width: 100%;
+//   position: fixed;
+//   bottom: 65px;
+// `;
 
 export default function ChatRoom() {
   const [textValue, setTextValue] = useState();
@@ -329,6 +311,7 @@ export default function ChatRoom() {
   return (
     <>
       {loading && <Loader />}
+      {Boolean(timeRemaining) && <PostTimer remaining={timeRemaining} />}
       <Container>
         <Header>
           <Tooltip title={title}>
@@ -359,39 +342,32 @@ export default function ChatRoom() {
         {loading ? (
           <InputContainer />
         ) : isAuthenticated ? (
-          <>
-            {Boolean(timeRemaining) && (
-              <PostTimerContainer>
-                <Remaining remaining={timeRemaining} />
-              </PostTimerContainer>
+          <InputContainer>
+            <StyledTextField
+              id="outlined-multiline-static"
+              multiline
+              variant="outlined"
+              style={{ width: "100%" }}
+              size="small"
+              value={textValue}
+              onChange={(e) => setTextValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13 && !e.shiftKey) {
+                  e.preventDefault();
+                }
+              }}
+            />
+            {posting ? (
+              <Spinner>🌀</Spinner>
+            ) : (
+              <SendIt
+                disabled={disabled}
+                onClick={disabled ? () => {} : handleClick}
+              >
+                🚀
+              </SendIt>
             )}
-            <InputContainer>
-              <StyledTextField
-                id="outlined-multiline-static"
-                multiline
-                variant="outlined"
-                style={{ width: "100%" }}
-                size="small"
-                value={textValue}
-                onChange={(e) => setTextValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13 && !e.shiftKey) {
-                    e.preventDefault();
-                  }
-                }}
-              />
-              {posting ? (
-                <Spinner>🌀</Spinner>
-              ) : (
-                <SendIt
-                  disabled={disabled}
-                  onClick={disabled ? () => {} : handleClick}
-                >
-                  🚀
-                </SendIt>
-              )}
-            </InputContainer>
-          </>
+          </InputContainer>
         ) : (
           <LoginContainer>
             <Button variant="contained" onClick={loginWithRedirect}>

@@ -315,6 +315,7 @@ export default function Home() {
     - fix issue with link ?
     - 404 page ✅
     - Better color scheme ?
+    - Why does it log you out when you refresh?
   */
 
   /*

@@ -181,7 +181,7 @@ export default function ChatRoom() {
       // would need to listen to some event and only run this after
       setTimeout(
         () => messageEndRef?.current?.scrollIntoView({ behavior: "smooth" }),
-        100
+        300
       );
     },
     // does this need to be here?

@@ -198,16 +198,17 @@ export default function ChatRoom() {
     skip: !userId,
   });
 
-  const [post, { loading: postLoading }] = useMutation(POST, {
-    onCompleted() {},
-  });
+  const [
+    post,
+    { loading: postLoading, data: { post: { id: postId } = {} } = {} },
+  ] = useMutation(POST);
 
   const loading = roomLoading || authLoading || userLoading;
 
   // usePosted should be in dependency array,
   // but doing so would defeat the purpose of it
   useEffect(() => {
-    if (hasPosted && messages[messages.length - 1]?.user?.id === userId) {
+    if (hasPosted && messages.find((m) => m.id === postId) !== -1) {
       setCanPost(false);
       setPosting(false);
       setTimeRemaining(10);

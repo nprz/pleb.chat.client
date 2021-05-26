@@ -264,7 +264,7 @@ export default function Home() {
     try {
       const url = new URL(e.target.value);
 
-      if (url.hostname !== "www.joinclubhouse.com") {
+      if (url.hostname !== "www.clubhouse.com") {
         setUrlError(true);
         return;
       }

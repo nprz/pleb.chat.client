@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 // Query
 import { loader } from "graphql.macro";
 import { useQuery } from "@apollo/client";
-const GET_USER = loader("../queries/getUserLastMessage.gql");
+const GET_USER = loader("../queries/getUser.gql");
 
 const useStyles = makeStyles({
   cardRoot: {

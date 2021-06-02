@@ -14,6 +14,7 @@ const useStyles = makeStyles({
     borderRadius: 20,
     marginTop: "5rem",
     width: "calc(100% - 4rem)",
+    maxWidth: 800,
     padding: "1rem",
     display: "flex",
     justifyContent: "center",

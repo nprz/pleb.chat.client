@@ -91,7 +91,7 @@ const ChatContainer = styled.div`
 const CenteredChatContainer = styled.div`
   max-width: ${maxWidth};
   width: 100%;
-  margin: auto;
+  margin: 0 auto;
 `;
 
 const LoadingContainer = styled.div`

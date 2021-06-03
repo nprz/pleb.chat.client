@@ -26,6 +26,9 @@ const GET_USER_LAST_MESSAGE = loader("../../queries/getUserLastMessage.gql");
 const NEW_MESSAGE = loader("../../subscriptions/newMessage.gql");
 const POST = loader("../../mutations/post.gql");
 
+const secondary = "#bfbdb0";
+const maxWidth = "800px";
+
 const StyledTextField = withStyles({
   root: {
     // temp solution to max height
@@ -35,6 +38,7 @@ const StyledTextField = withStyles({
     borderRadius: "4px",
     maxHeight: "59px",
     overflow: "scroll",
+    maxWidth,
     "& .MuiOutlinedInput-root": {
       "&.Mui-focused fieldset": {
         borderColor: "#f48024",
@@ -62,7 +66,7 @@ const Header = styled.div`
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
-  background-color: #bfbdb0;
+  background-color: ${secondary};
   font-weight: bold;
   font-size: 18px;
 `;
@@ -75,11 +79,19 @@ const HeaderText = styled.div`
 `;
 
 const ChatContainer = styled.div`
-  overflow: scroll;
   background-color: #f2efe4;
   padding: 0px 12px;
   max-height: 100%;
   flex-grow: 1;
+  overflow: scroll;
+  display: flex;
+  justify-content: center;
+`;
+
+const CenteredChatContainer = styled.div`
+  max-width: ${maxWidth};
+  width: 100%;
+  margin: auto;
 `;
 
 const LoadingContainer = styled.div`
@@ -92,15 +104,16 @@ const LoadingContainer = styled.div`
 const InputContainer = styled.div`
   width: 100%;
   min-height: 80px;
-  background-color: #bfbdb0;
+  background-color: ${secondary};
   display: flex;
   align-items: center;
+  justify-content: center;
 `;
 
 const LoginContainer = styled.div`
   width: 100%;
   min-height: 80px;
-  background-color: #bfbdb0;
+  background-color: ${secondary};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,13 +151,6 @@ const Spinner = styled.div`
   }
 `;
 
-// const PostTimerContainer = styled.div`
-//   height: 20px;
-//   width: 100%;
-//   position: fixed;
-//   bottom: 65px;
-// `;
-
 export default function ChatRoom() {
   const [textValue, setTextValue] = useState();
   const [timeRemaining, setTimeRemaining] = useState();
@@ -152,7 +158,6 @@ export default function ChatRoom() {
   const [hasPosted, setHasPosted] = useState(false);
   const [posting, setPosting] = useState(false);
   const messageEndRef = useRef(null);
-  const chatContainerRef = useRef(null);
   const enterKeyDown = useKeyDown("Enter");
   const shiftKeyDown = useKeyDown("Shift");
   const { chatRoomId } = useParams();
@@ -322,22 +327,24 @@ export default function ChatRoom() {
         {loading ? (
           <LoadingContainer />
         ) : (
-          <ChatContainer ref={chatContainerRef}>
-            {messages.map((message) => (
-              <Chat key={message.id}>
-                <div>
-                  <b>{`${message.user.name}:`}</b> {`${message.content}`}
-                </div>
-                <DateText>
-                  {message.createdAt.includes("T")
-                    ? moment(message.createdAt).format("h:mm a")
-                    : moment(new Date(parseInt(message.createdAt))).format(
-                        "h:mm a"
-                      )}
-                </DateText>
-              </Chat>
-            ))}
-            <div ref={messageEndRef} />
+          <ChatContainer>
+            <CenteredChatContainer>
+              {messages.map((message) => (
+                <Chat key={message.id}>
+                  <div>
+                    <b>{`${message.user.name}:`}</b> {`${message.content}`}
+                  </div>
+                  <DateText>
+                    {message.createdAt.includes("T")
+                      ? moment(message.createdAt).format("h:mm a")
+                      : moment(new Date(parseInt(message.createdAt))).format(
+                          "h:mm a"
+                        )}
+                  </DateText>
+                </Chat>
+              ))}
+              <div ref={messageEndRef} />
+            </CenteredChatContainer>
           </ChatContainer>
         )}
         {loading ? (

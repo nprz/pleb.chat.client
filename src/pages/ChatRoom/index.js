@@ -15,6 +15,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Loader from "../../components/Loader";
 import PostTimer from "../../components/PostTimer";
 import { withStyles } from "@material-ui/core/styles";
+import { Redirect } from "react-router-dom";
 
 import { useAuth0 } from "../../utils/auth";
 import useKeyDown from "../../utils/useKeyDown";
@@ -175,7 +176,7 @@ export default function ChatRoom() {
 
   const {
     loading: roomLoading,
-    data: { chatRoom: { messages = [], title = "" } = {} } = {},
+    data: { chatRoom = {} } = {},
     subscribeToMore = () => {},
   } = useQuery(GET_CHATROOM, {
     variables: {
@@ -192,6 +193,9 @@ export default function ChatRoom() {
     // does this need to be here?
     fetchPolicy: "network-only",
   });
+
+  // need to destructure like this or it's not happy
+  const { messages = [], title = "" } = chatRoom || {};
 
   const {
     loading: userLoading,
@@ -313,6 +317,10 @@ export default function ChatRoom() {
   }
 
   checkForSubscribe();
+
+  if (chatRoom === null) {
+    return <Redirect to="/404" />;
+  }
 
   return (
     <>

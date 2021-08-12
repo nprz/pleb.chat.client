@@ -197,16 +197,18 @@ export default function ChatRoom() {
   // need to destructure like this or it's not happy
   const { messages = [], title = "" } = chatRoom || {};
 
-  const {
-    loading: userLoading,
-    data: { user: { messages: lastMessage = [] } = {} } = {},
-  } = useQuery(GET_USER_LAST_MESSAGE, {
-    variables: {
-      userId,
-    },
-    skip: !userId,
-  });
+  const { loading: userLoading, data: { user: currentUser } = {} } = useQuery(
+    GET_USER_LAST_MESSAGE,
+    {
+      variables: {
+        userId,
+      },
+      skip: !userId,
+    }
+  );
 
+  // also need to destructure like this...
+  const { messages: lastMessage = [] } = currentUser || {};
   const [
     post,
     { loading: postLoading, data: { post: { id: postId } = {} } = {} },
